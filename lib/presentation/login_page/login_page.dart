@@ -6,6 +6,6 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const LoginPageForm();
+    return const Scaffold(backgroundColor: Colors.white, body: LoginPageForm());
   }
 }
