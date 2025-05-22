@@ -1,4 +1,3 @@
-import 'package:app_bamk/presentation/registration_page/registration_page.dart';
 import 'package:flutter/material.dart';
 
 class LoginPageForm extends StatefulWidget {
@@ -28,7 +27,7 @@ class _LoginPageFormState extends State<LoginPageForm> {
               "BAMK-MEDIENBEWERTUNG",
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: Color(0xff06402b),
+                color: Color(0xFF80b5e9),
                 fontSize: 36,
                 fontWeight: FontWeight.bold,
               ),
@@ -41,7 +40,7 @@ class _LoginPageFormState extends State<LoginPageForm> {
             decoration: InputDecoration(
               hintText: "E-Mail",
               filled: true,
-              fillColor: const Color(0x4f06402b),
+              fillColor: const Color(0xFFd9d9d9),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide.none,
@@ -63,7 +62,7 @@ class _LoginPageFormState extends State<LoginPageForm> {
             decoration: InputDecoration(
               hintText: "Passwort",
               filled: true,
-              fillColor: const Color(0x4f06402b),
+              fillColor: const Color(0xffd9d9d9),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide.none,
@@ -77,7 +76,7 @@ class _LoginPageFormState extends State<LoginPageForm> {
             width: double.infinity,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color.fromARGB(255, 0, 30, 1),
+                backgroundColor: const Color(0xff80b5e9),
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -96,8 +95,8 @@ class _LoginPageFormState extends State<LoginPageForm> {
               Navigator.pushNamed(context, "/registration");
             },
             child: const Text(
-              "Noch kein Konto? Registrieren",
-              style: TextStyle(color: Colors.black),
+              "Noch kein Konto? Hier Registrieren!",
+              style: TextStyle(color: Colors.white),
             ),
           ),
           Center(
