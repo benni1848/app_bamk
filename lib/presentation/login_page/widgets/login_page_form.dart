@@ -24,7 +24,7 @@ class _LoginPageFormState extends State<LoginPageForm> {
           ),
           const Center(
             child: Text(
-              "BAMK-MEDIENBEWERTUNG",
+              "BAMK MEDIENBEWERTUNG",
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Color(0xFF80b5e9),
