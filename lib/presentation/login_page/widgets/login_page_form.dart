@@ -1,5 +1,7 @@
+import 'package:app_bamk/application/bloc/bloc/auth_bloc.dart';
 import 'package:app_bamk/presentation/registration_page/widgets/custom_textfield.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LoginPageForm extends StatefulWidget {
   const LoginPageForm({super.key});
@@ -14,6 +16,7 @@ class _LoginPageFormState extends State<LoginPageForm> {
 
   @override
   Widget build(BuildContext context) {
+    final authBloc = AuthBloc();
     return Form(
       child: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
@@ -61,14 +64,39 @@ class _LoginPageFormState extends State<LoginPageForm> {
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
-              onPressed: () {},
+              onPressed: () {
+                authBloc.add(UserLoginEvent());
+              },
               child: const Text(
                 "Login",
                 style: TextStyle(fontSize: 18, color: Colors.white),
               ),
             ),
           ),
-          const SizedBox(height: 24),
+          SizedBox(
+            height: 16,
+          ),
+          Expanded(
+              child: BlocConsumer<AuthBloc, AuthState>(
+                  listener: (context, state) {
+                    if (state is AuthSuccess) {
+                      Navigator.pushNamed(context, "/user");
+                    }
+                  },
+                  bloc: authBloc,
+                  builder: (context, authState) {
+                    if (authState is AuthInitial) {
+                      return Container();
+                    } else if (authState is AuthLoading) {
+                      return CircularProgressIndicator();
+                    } else if (authState is AuthFailed) {
+                      return Container();
+                    } else if (authState is AuthSuccess) {
+                      return Container();
+                    }
+                    return Container();
+                  })),
+          const SizedBox(height: 16),
           TextButton(
             onPressed: () {
               Navigator.pushNamed(context, "/registration");

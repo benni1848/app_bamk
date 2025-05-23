@@ -6,6 +6,12 @@ class UserProfile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(backgroundColor: Color(0xFF1a1a1a),body: UserprofileForm(),); // BottomNavigationBar einfügen (einlesen)
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("BAMK"),
+      ),
+      backgroundColor: const Color(0xFF1a1a1a),
+      body: const UserprofileForm(),
+    ); // BottomNavigationBar einfügen (einlesen)
   }
 }
