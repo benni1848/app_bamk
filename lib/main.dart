@@ -4,7 +4,6 @@ import 'package:app_bamk/presentation/ticketView_page/ticketView_page.dart';
 import 'package:app_bamk/presentation/userProfile_page/userProfile_page.dart';
 import 'package:flutter/material.dart';
 
-
 void main() {
   runApp(const MyApp());
 }

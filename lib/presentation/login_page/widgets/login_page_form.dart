@@ -1,3 +1,4 @@
+import 'package:app_bamk/presentation/registration_page/widgets/custom_textfield.dart';
 import 'package:flutter/material.dart';
 
 class LoginPageForm extends StatefulWidget {
@@ -8,14 +9,12 @@ class LoginPageForm extends StatefulWidget {
 }
 
 class _LoginPageFormState extends State<LoginPageForm> {
-  final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: _formKey,
       child: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
         children: [
@@ -34,44 +33,24 @@ class _LoginPageFormState extends State<LoginPageForm> {
             ),
           ),
           const SizedBox(height: 40),
-          TextFormField(
-            controller: _emailController,
-            style: const TextStyle(color: Color(0xff3f4b3b)),
-            decoration: InputDecoration(
-              hintText: "E-Mail",
-              filled: true,
-              fillColor: const Color(0xFFd9d9d9),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide.none,
-              ),
-              prefixIcon: const Icon(Icons.email, color: Colors.black),
-            ),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Bitte E-Mail eingeben';
-              }
-              return null;
-            },
-          ),
+          CustomTextfield(
+              controller: _emailController,
+              hinttext: "Username",
+              icon: Icons.person,
+              validator: (value) {
+                return "1";
+              },
+              hideText: false),
           const SizedBox(height: 16),
-          TextFormField(
-            controller: _passwordController,
-            obscureText: true,
-            style: const TextStyle(color: Colors.white),
-            decoration: InputDecoration(
-              hintText: "Passwort",
-              filled: true,
-              fillColor: const Color(0xffd9d9d9),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide.none,
-              ),
-              prefixIcon: const Icon(Icons.lock, color: Colors.black),
-            ),
-          ),
-          const SizedBox(height: 16),
-          const SizedBox(height: 16),
+          CustomTextfield(
+              controller: _passwordController,
+              hinttext: "Passwort",
+              icon: Icons.lock,
+              validator: (value) {
+                return "1";
+              },
+              hideText: true),
+          const SizedBox(height: 32),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(

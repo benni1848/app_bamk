@@ -9,7 +9,6 @@ class RegistrationPageForm extends StatefulWidget {
 }
 
 class _RegistrationPageFormState extends State<RegistrationPageForm> {
-  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordRepeatController =
@@ -20,113 +19,57 @@ class _RegistrationPageFormState extends State<RegistrationPageForm> {
         child: ListView(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
             children: [
+          const SizedBox(
+            height: 80,
+          ),
           const Text("Erstelle dir hier ein Konto!",
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: Color(0xff06402b),
+                color: Color(0xFF80b5e9),
                 fontSize: 36,
                 fontWeight: FontWeight.bold,
               )),
           const SizedBox(
             height: 40,
           ),
-          TextFormField(
-            controller: _emailController,
-            style: const TextStyle(color: Color(0xff3f4b3b)),
-            decoration: InputDecoration(
-              hintText: "Username",
-              filled: true,
-              fillColor: const Color(0x4f06402b),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide.none,
-              ),
-              prefixIcon: const Icon(Icons.person, color: Colors.black),
-            ),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Bitte einen Usernamen eingeben';
-              }
-              return null;
-            },
-          ),
+          CustomTextfield(
+              controller: _usernameController,
+              hinttext: "Username",
+              icon: Icons.person,
+              validator: (value) {
+                return "0";
+              },
+              hideText: false),
           const SizedBox(
             height: 16,
           ),
-          TextFormField(
-            controller: _usernameController,
-            style: const TextStyle(color: Color(0xff3f4b3b)),
-            decoration: InputDecoration(
-              hintText: "E-Mail",
-              filled: true,
-              fillColor: const Color(0x4f06402b),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide.none,
-              ),
-              prefixIcon: const Icon(Icons.email, color: Colors.black),
-            ),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Bitte E-Mail eingeben';
-              }
-              return null;
-            },
-          ),
+          CustomTextfield(
+              controller: _passwordController,
+              hinttext: "Passwort",
+              icon: Icons.lock,
+              validator: (value) {
+                return "1";
+              },
+              hideText: true),
           const SizedBox(
             height: 16,
           ),
-          TextFormField(
-            controller: _passwordController,
-            style: const TextStyle(color: Color(0xff3f4b3b)),
-            decoration: InputDecoration(
-              hintText: "Passwort",
-              filled: true,
-              fillColor: const Color(0x4f06402b),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide.none,
-              ),
-              prefixIcon: const Icon(Icons.lock, color: Colors.black),
-            ),
-            validator: (value) {
-              if (value!.length <= 6 || value.isEmpty) {
-                return 'Passwort zu kurz';
-              }
-              return null;
-            },
-          ),
+          CustomTextfield(
+              controller: _passwordRepeatController,
+              hinttext: "Passwort Wiederholen",
+              icon: Icons.lock,
+              validator: (value) {
+                return "0";
+              },
+              hideText: true),
           const SizedBox(
-            height: 16,
-          ),
-          TextFormField(
-            controller: _passwordRepeatController,
-            style: const TextStyle(color: Color(0xff3f4b3b)),
-            decoration: InputDecoration(
-              hintText: "Passwort wiederholen",
-              filled: true,
-              fillColor: const Color(0x4f06402b),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide.none,
-              ),
-              prefixIcon: const Icon(Icons.lock, color: Colors.black),
-            ),
-            validator: (value) {
-              if (value!.length <= 6 || value.isEmpty) {
-                return 'Passwort zu kurz';
-              }
-              return null;
-            },
-          ),
-          const SizedBox(
-            height: 16,
+            height: 32,
           ),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color.fromARGB(255, 0, 30, 1),
+                backgroundColor: const Color(0xFF80b5e9),
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -134,20 +77,29 @@ class _RegistrationPageFormState extends State<RegistrationPageForm> {
               ),
               onPressed: () {},
               child: const Text(
-                "Login",
+                "Registrieren",
                 style: TextStyle(fontSize: 18, color: Colors.white),
               ),
             ),
           ),
-          CustomTextfield(
-            hideText: true,
-            hinttext: "test",
-            textcolor: Colors.black,
-            fillcolor: const Color(0x4f06402b),
-            icon: Icons.person,
-            validator: (value) {
-              return null;
+          const SizedBox(
+            height: 24,
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pushNamed(context, "/");
             },
+            child: const Text(
+              "Du hast bereits ein Konto? Hier anmelden!",
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+          Center(
+            child: Image.asset(
+              "assets/test.png",
+              height: 150,
+              width: 150,
+            ),
           ),
         ]));
   }
