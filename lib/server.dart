@@ -1,4 +1,4 @@
-import 'dart:io';
+/*import 'dart:io';
 import '../bin/db.dart';
 import '../bin/handlers.dart';
 
@@ -12,4 +12,4 @@ Future<void> startServer() async {
   await for (HttpRequest request in server) {
     RequestHandler.handleRequest(request);
   }
-}
+}*/

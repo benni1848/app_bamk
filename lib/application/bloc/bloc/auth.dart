@@ -1,4 +1,4 @@
-import 'package:jwt/jwt.dart';
+/*import 'package:jwt/jwt.dart';
 
 class Auth {
   static const String secret = 'dein_geheimer_schlüssel';
@@ -16,5 +16,5 @@ class Auth {
     } catch (e) {
       return false;
     }
-  }
-}
+  }}
+*/

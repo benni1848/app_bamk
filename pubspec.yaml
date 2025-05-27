@@ -30,7 +30,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
+  http: 1.4.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -40,7 +40,7 @@ dependencies:
   mongo_dart: ^0.10.5
   dotenv: ^4.2.0
   dart_jsonwebtoken: ^3.2.0
-  
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
