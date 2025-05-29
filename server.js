@@ -1,4 +1,4 @@
-require('dotenv').config(); // Lädt Umgebungsvariablen
+/*require('dotenv').config(); // Lädt Umgebungsvariablen
 
 const express = require('express'); 
 const mongoose = require('mongoose'); 
@@ -22,4 +22,4 @@ mongoose.connect(process.env.MONGO_URI, {
 const PORT = process.env.PORT || 27017;
 app.listen(PORT, () => console.log(`Server läuft auf Port ${PORT}`));
 
-console.log("MongoDB URI:", process.env.MONGO_URI);
+console.log("MongoDB URI:", process.env.MONGO_URI);*/
