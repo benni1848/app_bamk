@@ -2,7 +2,6 @@ import 'package:app_bamk/domain/entities/movie_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:app_bamk/data/test_movie.dart';
 import 'package:app_bamk/presentation/film_page/widgets/movie_tag.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class FilmPageForm extends StatefulWidget {
@@ -14,15 +13,6 @@ class FilmPageForm extends StatefulWidget {
 
 class _FilmPageFormState extends State<FilmPageForm> {
   final MovieEntity movie = testMovie;
-
-  Future<void> _launchURL(String url) async {
-    final uri = Uri.parse(url);
-    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Konnte Link nicht öffnen')),
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
