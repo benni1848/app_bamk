@@ -18,13 +18,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "BAMK Rating",
-      initialRoute: "/search", //Anpassen, um direkt in die Ansicht zu starten
+      initialRoute: "/film", //Anpassen, um direkt in die Ansicht zu starten
       routes: {
         "/": (context) => const LoginPage(),
         "/registration": (context) => const RegistrationPage(),
         "/ticket": (context) => const TicketView(),
         "/user": (context) => const UserProfile(),
-        "/search":(context) => const SearchPage(),
+        "/search": (context) => const SearchPage(),
         "/film": (context) => const FilmPage(),
       },
     );
