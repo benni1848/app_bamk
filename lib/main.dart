@@ -1,6 +1,7 @@
 import 'package:app_bamk/presentation/film_page/film_page.dart';
 import 'package:app_bamk/presentation/login_page/login_page.dart';
 import 'package:app_bamk/presentation/registration_page/registration_page.dart';
+import 'package:app_bamk/presentation/search_page/search_page.dart';
 import 'package:app_bamk/presentation/ticketView_page/ticketView_page.dart';
 import 'package:app_bamk/presentation/userProfile_page/userProfile_page.dart';
 import 'package:flutter/material.dart';
@@ -17,12 +18,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "BAMK Rating",
-      initialRoute: "/film", //Anpassen, um direkt in die Ansicht zu starten
+      initialRoute: "/search", //Anpassen, um direkt in die Ansicht zu starten
       routes: {
         "/": (context) => const LoginPage(),
         "/registration": (context) => const RegistrationPage(),
         "/ticket": (context) => const TicketView(),
         "/user": (context) => const UserProfile(),
+        "/search":(context) => const SearchPage(),
         "/film": (context) => const FilmPage(),
       },
     );
