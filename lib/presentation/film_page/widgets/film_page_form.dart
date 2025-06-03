@@ -2,6 +2,7 @@ import 'package:app_bamk/domain/entities/movie_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:app_bamk/data/test_movie.dart';
 import 'package:app_bamk/presentation/film_page/widgets/movie_tag.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class FilmPageForm extends StatefulWidget {
   const FilmPageForm({super.key});
@@ -78,15 +79,16 @@ class _FilmPageFormState extends State<FilmPageForm> {
                 color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
-          GestureDetector(
-            onTap: () {},
-            child: Text(
-              movie.trailerUrl,
-              style: const TextStyle(
-                color: Colors.blueAccent,
-                decoration: TextDecoration.underline,
+          YoutubePlayer(
+            controller: YoutubePlayerController(
+              initialVideoId: YoutubePlayer.convertUrlToId(movie.trailerUrl)!,
+              flags: const YoutubePlayerFlags(
+                autoPlay: false,
+                mute: false,
               ),
             ),
+            showVideoProgressIndicator: true,
+            progressIndicatorColor: Colors.blueAccent,
           ),
           const SizedBox(height: 24),
         ],
