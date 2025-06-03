@@ -1,3 +1,4 @@
+import 'package:app_bamk/presentation/film_page/film_page.dart';
 import 'package:app_bamk/presentation/login_page/login_page.dart';
 import 'package:app_bamk/presentation/registration_page/registration_page.dart';
 import 'package:app_bamk/presentation/search_page/search_page.dart';
@@ -24,6 +25,7 @@ class MyApp extends StatelessWidget {
         "/ticket": (context) => const TicketView(),
         "/user": (context) => const UserProfile(),
         "/search":(context) => const SearchPage(),
+        "/film": (context) => const FilmPage(),
       },
     );
   }
