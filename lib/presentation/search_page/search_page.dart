@@ -16,7 +16,7 @@ class SearchPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Image.asset(
-                'assets/test.png',
+                'assets/logo_bamk.png',
                 height: 50,
               ),
               const Expanded(
