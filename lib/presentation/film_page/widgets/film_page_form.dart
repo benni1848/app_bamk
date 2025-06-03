@@ -70,7 +70,7 @@ class _FilmPageFormState extends State<FilmPageForm> {
           _buildDetail("Regisseur", movie.director),
           _buildDetail("Medium", movie.mediatype),
           _buildDetail("Dauer", "${movie.duration} Minuten"),
-          _buildDetail("Veröffentlichung", "${movie.published.year}"),
+          _buildDetail("Veröffentlichung", "${movie.published.day}.${movie.published.month}.${movie.published.year}"),
           _buildDetail("Bewertung", "${movie.rating} / 10"),
           const SizedBox(height: 24),
           Text(
