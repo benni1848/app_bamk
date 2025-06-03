@@ -1,3 +1,4 @@
+import 'package:app_bamk/api/model/movie_model.dart';
 import 'package:app_bamk/domain/entities/movie_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:app_bamk/data/test_movie.dart';
@@ -12,10 +13,11 @@ class FilmPageForm extends StatefulWidget {
 }
 
 class _FilmPageFormState extends State<FilmPageForm> {
-  final MovieEntity movie = testMovie;
+  final List<MovieModel> movie = testMovie;
 
   @override
   Widget build(BuildContext context) {
+    MovieModel movie = ModalRoute.of(context)!.settings.arguments as MovieModel;
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
       child: Column(
