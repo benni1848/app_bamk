@@ -10,6 +10,12 @@ class UserprofileForm extends StatefulWidget {
 class _UserprofileFormState extends State<UserprofileForm> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Container(
+      child: Column(
+        children: [
+          Image.network("https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png"),
+        ],
+      )
+    );
   }
 }
