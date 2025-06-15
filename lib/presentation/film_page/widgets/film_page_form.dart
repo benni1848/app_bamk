@@ -1,23 +1,44 @@
-import 'package:app_bamk/api/model/movie_model.dart';
 import 'package:app_bamk/domain/entities/movie_entity.dart';
-import 'package:flutter/material.dart';
-import 'package:app_bamk/data/test_movie.dart';
 import 'package:app_bamk/presentation/film_page/widgets/movie_tag.dart';
+import 'package:flutter/material.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class FilmPageForm extends StatefulWidget {
-  const FilmPageForm({super.key});
+  final MovieEntity movie;
+
+  const FilmPageForm({super.key, required this.movie});
 
   @override
   State<FilmPageForm> createState() => _FilmPageFormState();
 }
 
 class _FilmPageFormState extends State<FilmPageForm> {
-  final List<MovieModel> movie = testMovie;
+  late YoutubePlayerController _youtubeController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    final videoId = YoutubePlayer.convertUrlToId(widget.movie.trailerUrl);
+    _youtubeController = YoutubePlayerController(
+      initialVideoId: videoId ?? '',
+      flags: const YoutubePlayerFlags(
+        autoPlay: false,
+        mute: false,
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _youtubeController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    MovieModel movie = ModalRoute.of(context)!.settings.arguments as MovieModel;
+    final movie = widget.movie;
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -39,29 +60,26 @@ class _FilmPageFormState extends State<FilmPageForm> {
           const SizedBox(height: 20),
           Center(
             child: Image.network(
-              movie.imageUrls.first,
+              movie.coverImage,
               height: 200,
               fit: BoxFit.cover,
             ),
           ),
           const SizedBox(height: 20),
-          const SizedBox(height: 8),
-          Wrap(
-            spacing: 8,
-            runSpacing: 4,
-            alignment: WrapAlignment.center,
-            children: movie.genre.map(
-              (g) {
+          Center(
+            child: Wrap(
+              spacing: 8,
+              runSpacing: 4,
+              alignment: WrapAlignment.center,
+              children: movie.genre.map((g) {
                 return MovieTag(
                   text: g,
                   onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Genre: $g')),
-                    );
+                    Navigator.pop(context, g); // Hier: Genre zurückgeben
                   },
                 );
-              },
-            ).toList(),
+              }).toList(),
+            ),
           ),
           const SizedBox(height: 24),
           Text(
@@ -72,23 +90,21 @@ class _FilmPageFormState extends State<FilmPageForm> {
           _buildDetail("Regisseur", movie.director),
           _buildDetail("Medium", movie.mediatype),
           _buildDetail("Dauer", "${movie.duration} Minuten"),
-          _buildDetail("Veröffentlichung", "${movie.published.day}.${movie.published.month}.${movie.published.year}"),
+          _buildDetail("Veröffentlichung",
+              "${movie.published.day}.${movie.published.month}.${movie.published.year}"),
           _buildDetail("Bewertung", "${movie.rating} / 10"),
           const SizedBox(height: 24),
-          Text(
+          const Text(
             "Trailer ansehen:",
-            style: const TextStyle(
-                color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           const SizedBox(height: 8),
           YoutubePlayer(
-            controller: YoutubePlayerController(
-              initialVideoId: YoutubePlayer.convertUrlToId(movie.trailerUrl)!,
-              flags: const YoutubePlayerFlags(
-                autoPlay: false,
-                mute: false,
-              ),
-            ),
+            controller: _youtubeController,
             showVideoProgressIndicator: true,
             progressIndicatorColor: Colors.blueAccent,
           ),
@@ -102,6 +118,7 @@ class _FilmPageFormState extends State<FilmPageForm> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             "$label: ",

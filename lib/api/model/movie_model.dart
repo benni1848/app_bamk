@@ -13,21 +13,26 @@ class MovieModel extends MovieEntity {
     required super.trailerUrl,
     required super.description,
     required super.rating,
+    required super.coverImage,
   });
 
   factory MovieModel.fromJson(Map<String, dynamic> json) {
     return MovieModel(
-      id: json['id'],
-      mediatype: json['mediatype'],
-      name: json['name'],
-      genre: List<String>.from(json['genre']),
-      director: json['director'],
-      duration: json['duration'],
-      published: DateTime.parse(json['published']),
-      imageUrls: List<String>.from(json['imageUrls']),
-      trailerUrl: json['trailerUrl'],
-      description: json['description'],
-      rating: (json['rating'] as num).toDouble(),
+      id: json['id'] ?? '',
+      mediatype: json['mediatype'] ?? '',
+      name: json['title'] ?? '',
+      genre: json['genre'] != null ? List<String>.from(json['genre']) : [],
+      director: json['director'] ?? '',
+      duration: json['duration'] ?? '',
+      published: json['releaseDate'] != null
+          ? DateTime.parse(json['releaseDate'])
+          : DateTime(2000),
+      imageUrls:
+          json['imageUrls'] != null ? List<String>.from(json['imageUrls']) : [],
+      trailerUrl: json['trailerUrl'] ?? '',
+      description: json['description'] ?? '',
+      rating: (json['rating'] as num?)?.toDouble() ?? 0.0,
+      coverImage: json['coverImage'] ?? '',
     );
   }
 
@@ -44,6 +49,7 @@ class MovieModel extends MovieEntity {
       'trailerUrl': trailerUrl,
       'description': description,
       'rating': rating,
+      'coverImage': coverImage,
     };
   }
 }

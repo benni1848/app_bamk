@@ -1,8 +1,10 @@
+import 'package:app_bamk/domain/entities/movie_entity.dart';
 import 'package:app_bamk/presentation/film_page/widgets/film_page_form.dart';
 import 'package:flutter/material.dart';
 
 class FilmPage extends StatelessWidget {
-  const FilmPage({super.key});
+  final MovieEntity movie;
+  const FilmPage({super.key, required this.movie});
 
   @override
   Widget build(BuildContext context) {
@@ -11,9 +13,9 @@ class FilmPage extends StatelessWidget {
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: const Color(0xFF80B5E9),
-        title: const Text("Filmübersicht"),
+        title: Text("Filmübersicht"),
       ),
-      body: const FilmPageForm(),
+      body: FilmPageForm(movie: movie),
     );
   }
 }

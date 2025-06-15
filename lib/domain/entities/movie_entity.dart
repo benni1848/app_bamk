@@ -10,6 +10,7 @@ class MovieEntity {
   final String trailerUrl;
   final String description;
   final double rating;
+  final String coverImage;
 
   MovieEntity({
     required this.id,
@@ -23,5 +24,6 @@ class MovieEntity {
     required this.trailerUrl,
     required this.description,
     required this.rating,
+    required this.coverImage,
   });
 }

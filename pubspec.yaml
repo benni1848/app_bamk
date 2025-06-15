@@ -40,6 +40,7 @@ dependencies:
   url_launcher: ^6.1.7
   youtube_player_flutter: ^9.1.1
   flutter_inappwebview: ^6.0.0
+  http: ^1.4.0
 
 
 dev_dependencies:
