@@ -11,12 +11,13 @@ class LoginPageForm extends StatefulWidget {
 }
 
 class _LoginPageFormState extends State<LoginPageForm> {
-  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    final authBloc = AuthBloc();
+    final authBloc = BlocProvider.of<AuthBloc>(
+        context); // get `AuthBloc` from `BlocProvider`
     return Form(
       child: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
@@ -37,7 +38,7 @@ class _LoginPageFormState extends State<LoginPageForm> {
           ),
           const SizedBox(height: 40),
           CustomTextfield(
-              controller: _emailController,
+              controller: _usernameController,
               hinttext: "Username",
               icon: Icons.person,
               validator: (value) {
@@ -65,7 +66,15 @@ class _LoginPageFormState extends State<LoginPageForm> {
                 ),
               ),
               onPressed: () {
-                authBloc.add(UserLoginEvent());
+                if (_usernameController.text.isEmpty ||
+                    _passwordController.text.isEmpty) {
+                  print("Fehler: Bitte Benutzernamen und Passwort eingeben!");
+                  return;
+                }
+                authBloc.add(UserLoginEvent(
+                  username: _usernameController.text.trim(),
+                  password: _passwordController.text.trim(),
+                ));
               },
               child: const Text(
                 "Login",

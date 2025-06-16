@@ -1,21 +1,35 @@
-import 'package:app_bamk/api/services/movie_service.dart';
-import 'package:app_bamk/domain/entities/movie_entity.dart';
-import 'package:app_bamk/presentation/film_page/film_page.dart';
 import 'package:flutter/material.dart';
-import 'package:app_bamk/api/model/movie_model.dart';
+import 'package:app_bamk/api/services/movie_service.dart';
+import 'package:app_bamk/api/services/game_service.dart';
+import 'package:app_bamk/api/services/music_service.dart';
+
+import 'package:app_bamk/domain/entities/movie_entity.dart';
+import 'package:app_bamk/domain/entities/game_entity.dart';
+import 'package:app_bamk/domain/entities/music_entity.dart';
+
+import 'package:app_bamk/presentation/film_page/film_page.dart';
+import 'package:app_bamk/presentation/game_page/game_page.dart';
+import 'package:app_bamk/presentation/music_page/music_page.dart';
+
+import 'package:app_bamk/presentation/search_page/search_page.dart'; // für ContentType
 import 'package:app_bamk/presentation/widgets/searchBar.dart' as custom;
 
 class SearchPageForm extends StatefulWidget {
   final List<String>? initialSelectedGenres;
+  final ContentType contentType;
 
-  const SearchPageForm({super.key, this.initialSelectedGenres});
+  const SearchPageForm({
+    super.key,
+    this.initialSelectedGenres,
+    required this.contentType,
+  });
 
   @override
   State<SearchPageForm> createState() => _SearchPageFormState();
 }
 
 class _SearchPageFormState extends State<SearchPageForm> {
-  List<MovieEntity> allMovies = [];
+  List<Object> allItems = [];
   String searchText = '';
   bool isLoading = true;
   String? error;
@@ -29,45 +43,68 @@ class _SearchPageFormState extends State<SearchPageForm> {
     if (widget.initialSelectedGenres != null) {
       selectedGenres = List.from(widget.initialSelectedGenres!);
     }
-    _loadMovies();
+    _loadItems();
   }
 
-  Future<void> _loadMovies() async {
+  Future<void> _loadItems() async {
     try {
       final movies = await MovieService.fetchMovies();
+      final games = await GameService.fetchGames();
+      final music = await MusicService.fetchMusic();
 
-      // Alle Genres aus allen Filmen sammeln, ohne Duplikate
-      final genresSet = <String>{};
-      for (var movie in movies) {
-        genresSet.addAll(movie.genre);
+      final genreSet = <String>{};
+      List<Object> filteredItems;
+
+      switch (widget.contentType) {
+        case ContentType.movie:
+          filteredItems = movies;
+          genreSet.addAll(movies.expand((m) => m.genre));
+          break;
+        case ContentType.game:
+          filteredItems = games;
+          genreSet.addAll(games.expand((g) => g.genre));
+          break;
+        case ContentType.music:
+          filteredItems = music;
+          genreSet.addAll(music.expand((m) => m.genre));
+          break;
       }
 
       setState(() {
-        allMovies = movies;
-        allGenres = genresSet.toList()..sort();
+        allItems = filteredItems;
+        allGenres = genreSet.toList()..sort();
         isLoading = false;
       });
     } catch (e) {
       setState(() {
-        error = 'Fehler beim Laden der Filme: $e';
+        error = 'Fehler beim Laden der Inhalte: $e';
         isLoading = false;
       });
     }
   }
 
-  // Gefilterte Filme anhand von Suchtext und Genre-Auswahl
-  List<MovieEntity> get filteredMovies {
+  List<Object> get filteredItems {
     final search = searchText.toLowerCase();
 
-    return allMovies.where((movie) {
-      // Filter nach Suchtext am Anfang eines Wortes
-      final words = movie.name.toLowerCase().split(RegExp(r'[\s,.\-_:;!?]+'));
-      final matchesSearch =
-          search.isEmpty || words.any((word) => word.startsWith(search));
+    return allItems.where((item) {
+      late final String name;
+      late final List<String> genres;
 
-      // Filter nach Genre-Auswahl (wenn ausgewählt)
-      final matchesGenre = selectedGenres.isEmpty ||
-          movie.genre.any((g) => selectedGenres.contains(g));
+      if (item is MovieEntity) {
+        name = item.name;
+        genres = item.genre;
+      } else if (item is GameEntity || item is MusicEntity) {
+        name = (item as dynamic).title;
+        genres = (item as dynamic).genre;
+      } else {
+        return false;
+      }
+
+      final words = name.toLowerCase().split(RegExp(r'[\s,.\-_:;!?]+'));
+      final matchesSearch =
+          search.isEmpty || words.any((w) => w.startsWith(search));
+      final matchesGenre =
+          selectedGenres.isEmpty || genres.any(selectedGenres.contains);
 
       return matchesSearch && matchesGenre;
     }).toList();
@@ -79,7 +116,6 @@ class _SearchPageFormState extends State<SearchPageForm> {
       padding: const EdgeInsets.all(8),
       child: Column(
         children: [
-          // Suchleiste oben
           custom.SearchBar(
             onChanged: (value) {
               setState(() {
@@ -88,8 +124,6 @@ class _SearchPageFormState extends State<SearchPageForm> {
             },
           ),
           const SizedBox(height: 10),
-
-          // Genre Multi-Select als Wrap mit Buttons
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
@@ -99,9 +133,12 @@ class _SearchPageFormState extends State<SearchPageForm> {
                   padding: const EdgeInsets.symmetric(horizontal: 4),
                   child: FilterChip(
                     selected: isSelected,
-                    label: Text(genre,
-                        style: TextStyle(
-                            color: isSelected ? Colors.white : Colors.black)),
+                    label: Text(
+                      genre,
+                      style: TextStyle(
+                        color: isSelected ? Colors.white : Colors.black,
+                      ),
+                    ),
                     selectedColor: Colors.blueAccent,
                     onSelected: (selected) {
                       setState(() {
@@ -117,29 +154,17 @@ class _SearchPageFormState extends State<SearchPageForm> {
               }).toList(),
             ),
           ),
-
           const SizedBox(height: 10),
-
-          // Flexible Bereich für Grid, um Overflow zu vermeiden
           if (isLoading)
             const Expanded(child: Center(child: CircularProgressIndicator()))
           else if (error != null)
-            Expanded(
-              child: Center(
-                child: Text(error!, style: const TextStyle(color: Colors.red)),
-              ),
-            )
+            Expanded(child: Center(child: Text(error!)))
           else
             Expanded(
-              child: filteredMovies.isEmpty
-                  ? const Center(
-                      child: Text(
-                        'Keine Filme gefunden',
-                        style: TextStyle(color: Colors.white70),
-                      ),
-                    )
+              child: filteredItems.isEmpty
+                  ? const Center(child: Text("Keine Inhalte gefunden"))
                   : GridView.builder(
-                      itemCount: filteredMovies.length,
+                      itemCount: filteredItems.length,
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
@@ -148,22 +173,32 @@ class _SearchPageFormState extends State<SearchPageForm> {
                         childAspectRatio: 2 / 3,
                       ),
                       itemBuilder: (context, index) {
-                        final film = filteredMovies[index];
+                        final item = filteredItems[index];
+                        final title = (item is MovieEntity)
+                            ? item.name
+                            : (item as dynamic).title;
+                        final image = (item as dynamic).coverImage;
 
                         return InkWell(
-                          onTap: () async {
-                            final selectedGenre = await Navigator.push<String>(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => FilmPage(movie: film)),
-                            );
-
-                            if (selectedGenre != null &&
-                                selectedGenre.isNotEmpty) {
-                              setState(() {
-                                selectedGenres = [selectedGenre];
-                                searchText = '';
-                              });
+                          onTap: () {
+                            if (item is MovieEntity) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => FilmPage(movie: item)),
+                              );
+                            } else if (item is GameEntity) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => GamePage(game: item)),
+                              );
+                            } else if (item is MusicEntity) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => MusicPage(music: item)),
+                              );
                             }
                           },
                           borderRadius: BorderRadius.circular(12),
@@ -181,7 +216,7 @@ class _SearchPageFormState extends State<SearchPageForm> {
                                     borderRadius: const BorderRadius.vertical(
                                         top: Radius.circular(12)),
                                     child: Image.network(
-                                      film.coverImage,
+                                      image,
                                       width: double.infinity,
                                       fit: BoxFit.cover,
                                     ),
@@ -190,7 +225,7 @@ class _SearchPageFormState extends State<SearchPageForm> {
                                 Padding(
                                   padding: const EdgeInsets.all(10.0),
                                   child: Text(
-                                    film.name,
+                                    title,
                                     textAlign: TextAlign.center,
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,

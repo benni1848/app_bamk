@@ -1,21 +1,46 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:app_bamk/api/services/auth_service.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  AuthBloc() : super(AuthInitial()) {
-    Future sleep1() {
-      return Future.delayed(const Duration(seconds: 2), () => "1");
-    }
+  final AuthService authService; // Fügt AuthService für API-Aufrufe hinzu
 
-    on<AuthEvent>((event, emit) async {
+  AuthBloc({required this.authService}) : super(AuthInitial()) {
+    on<UserLoginEvent>((event, emit) async {
+      emit(AuthLoading()); //  Zeigt Ladezustand an
+
+      try {
+        final token = await authService.loginUser(
+            event.username, event.password); // API-Aufruf
+        emit(AuthSuccess(
+            token as String)); // Erfolgreicher Login (Token wird gespeichert)
+      } catch (_) {
+        emit(AuthFailed()); // Fehler behandeln
+      }
+    });
+
+    on<UserRegisterEvent>((event, emit) async {
       emit(AuthLoading());
-      //do something
-      await sleep1(); //fake request for testing
-      //get advice
-      emit(AuthSuccess());
+
+      try {
+        final success = await authService.registerUser(
+            event.username, event.password); // API-Aufruf
+        if (success) {
+          emit(AuthSuccess("Registrierung erfolgreich!"));
+        } else {
+          emit(AuthFailed());
+        }
+      } catch (_) {
+        emit(AuthFailed());
+      }
+    });
+
+    on<UserLogoutEvent>((event, emit) async {
+      await authService.logout(); // Entfernt das Token
+      emit(AuthInitial()); // Zurücksetzen des States nach Logout
     });
   }
 }
