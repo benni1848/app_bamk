@@ -14,31 +14,13 @@ class DashboardPageForm extends StatefulWidget {
 class _DashboardPageFormState extends State<DashboardPageForm> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black, // Hintergrund des Bodys
-      body: Column(
-        children: [
-          // Container for Top 10
-          ContainerTopTenMovie(),
-          ContainerTopTenMusic(),
+    return Form(
+        child: ListView(children: [
+      // Container for Top 10
+      ContainerTopTenMovie(),
+      ContainerTopTenMusic(),
 
-          // Logout Button am Ende
-          IconButton(
-            icon: const Icon(Icons.logout),
-            tooltip: 'Logout',
-            onPressed: () async {
-              final authService = AuthService(); // Lokale Instanz erstellen
-              await authService.logout();
-
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => const LoginPage()),
-                (route) => false,
-              );
-            },
-          ),
-        ],
-      ),
-    );
+      // Logout Button am Ende
+    ]));
   }
 }
