@@ -18,20 +18,38 @@ class _UserprofileFormState extends State<UserprofileForm> {
       child: ListView(
         children: [
           ContainerProfilePicture(),
-          TextButton(
-            child: Text("Logout"),
-            onPressed: () async {
-              final authService = AuthService(); // Lokale Instanz erstellen
-              await authService.logout();
-
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => const LoginPage()),
-                (route) => false,
-              );
-            },
-          ),
           ContainerProfileInformation(),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 75, vertical: 20),
+              child: TextButton(
+                style: TextButton.styleFrom(
+                  padding:  EdgeInsets.all(10),
+                  backgroundColor: Color(0xFFE97F80),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                child: Text(
+                  "Logout",
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFFFFFFFF),
+                  ),
+                ),
+                onPressed: () async {
+                  final authService = AuthService(); // Lokale Instanz erstellen
+                  await authService.logout();
+              
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => const LoginPage()),
+                    (route) => false,
+                  );
+                },
+              ),
+            ),
+
         ],
       ),
     );

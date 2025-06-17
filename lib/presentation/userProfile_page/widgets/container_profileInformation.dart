@@ -13,7 +13,7 @@ class _ContainerProfileInformationState
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 350,
+      height: 400,
       width: double.infinity,
       color: const Color(0xFF1A1A1A),
       margin: const EdgeInsets.only(top: 20),

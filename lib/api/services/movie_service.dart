@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 
 class MovieService {
   static final String? baseUrl = dotenv.env['API_BASE_URL'] != null
-      ? '${dotenv.env['API_BASE_URL']}/movies'
+      ? '${dotenv.env['API_BASE_URL']}/Movies'
       : null;
 
   static Future<List<MovieModel>> fetchMovies() async {

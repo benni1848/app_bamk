@@ -27,8 +27,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: app.RootWidget(), //BottomNavigationBar hinzufügen
-      //home: const AuthGate(),
+      //home: app.RootWidget(), //BottomNavigationBar hinzufügen
+      home: const AuthGate(),
       // home: RegistrationPage(),
       title: "BAMK Rating",
 
