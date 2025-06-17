@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:app_bamk/api/services/movie_service.dart';
 import 'package:app_bamk/api/services/game_service.dart';
 import 'package:app_bamk/api/services/music_service.dart';
+import 'package:app_bamk/api/services/ticket_service.dart'; //Ticket-Service hinzugefügt
 
 import 'package:app_bamk/domain/entities/movie_entity.dart';
 import 'package:app_bamk/domain/entities/game_entity.dart';
@@ -36,6 +37,13 @@ class _SearchPageFormState extends State<SearchPageForm> {
 
   List<String> selectedGenres = [];
   List<String> allGenres = [];
+
+  final TextEditingController _userNameController =
+      TextEditingController(); //Nutzernamen-Controller hinzugefügt
+  final TextEditingController _messageController = TextEditingController();
+  bool showTicketForm = false;
+  String? successMessage;
+  String? errorMessage;
 
   @override
   void initState() {
@@ -87,31 +95,27 @@ class _SearchPageFormState extends State<SearchPageForm> {
     }
   }
 
-  List<Object> get filteredItems {
-    final search = searchText.toLowerCase();
+  void sendTicket() async {
+    final userName = _userNameController.text.trim(); //Nutzername abrufen
+    final message = _messageController.text.trim();
 
-    return allItems.where((item) {
-      late final String name;
-      late final List<String> genres;
-
-      if (item is MovieEntity) {
-        name = item.name;
-        genres = item.genre;
-      } else if (item is GameEntity || item is MusicEntity) {
-        name = (item as dynamic).title;
-        genres = (item as dynamic).genre;
-      } else {
-        return false;
+    if (userName.isNotEmpty && message.isNotEmpty) {
+      try {
+        await TicketService.sendTicket(userName, message);
+        setState(() {
+          successMessage = "Ticket erfolgreich gesendet";
+          errorMessage = null;
+          showTicketForm = false;
+        });
+        _userNameController.clear(); //Nutzername-Feld leeren
+        _messageController.clear();
+      } catch (e) {
+        setState(() {
+          errorMessage = "Fehler beim Senden des Tickets";
+          successMessage = null;
+        });
       }
-
-      final words = name.toLowerCase().split(RegExp(r'[\s,.\-_:;!?]+'));
-      final matchesSearch =
-          search.isEmpty || words.any((w) => w.startsWith(search));
-      final matchesGenre =
-          selectedGenres.isEmpty || genres.any(selectedGenres.contains);
-
-      return matchesSearch && matchesGenre;
-    }).toList();
+    }
   }
 
   @override
@@ -127,6 +131,49 @@ class _SearchPageFormState extends State<SearchPageForm> {
               });
             },
           ),
+          const SizedBox(height: 10),
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                showTicketForm = !showTicketForm;
+              });
+            },
+            child: Text(showTicketForm
+                ? "Ticket schreiben schließen"
+                : "Ticket schreiben"),
+          ),
+          if (showTicketForm) ...[
+            SizedBox(height: 10),
+            TextField(
+              controller: _userNameController,
+              style: TextStyle(
+                  color: Colors.white), //Weißer Text auf dunklem Hintergrund
+              decoration: InputDecoration(
+                labelText: "Benutzername",
+                border: OutlineInputBorder(),
+              ),
+            ),
+            SizedBox(height: 10),
+            TextField(
+              controller: _messageController,
+              style: TextStyle(
+                  color: Colors.white), //Weißer Text auf dunklem Hintergrund
+              decoration: InputDecoration(
+                labelText: "Ticket-Nachricht",
+                border: OutlineInputBorder(),
+              ),
+            ),
+            SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: sendTicket,
+              child: Text("Ticket senden"),
+            ),
+            SizedBox(height: 10),
+            if (successMessage != null)
+              Text(successMessage!, style: TextStyle(color: Colors.green)),
+            if (errorMessage != null)
+              Text(errorMessage!, style: TextStyle(color: Colors.red)),
+          ],
           const SizedBox(height: 10),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
@@ -165,10 +212,10 @@ class _SearchPageFormState extends State<SearchPageForm> {
             Expanded(child: Center(child: Text(error!)))
           else
             Expanded(
-              child: filteredItems.isEmpty
+              child: allItems.isEmpty
                   ? const Center(child: Text("Keine Inhalte gefunden"))
                   : GridView.builder(
-                      itemCount: filteredItems.length,
+                      itemCount: allItems.length,
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
@@ -177,7 +224,7 @@ class _SearchPageFormState extends State<SearchPageForm> {
                         childAspectRatio: 2 / 3,
                       ),
                       itemBuilder: (context, index) {
-                        final item = filteredItems[index];
+                        final item = allItems[index];
                         final title = (item is MovieEntity)
                             ? item.name
                             : (item as dynamic).title;
@@ -228,33 +275,12 @@ class _SearchPageFormState extends State<SearchPageForm> {
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
                                 Expanded(
-                                  child: ClipRRect(
-                                    borderRadius: const BorderRadius.vertical(
-                                        top: Radius.circular(12)),
-                                    child: Image.network(
-                                      image,
-                                      width: double.infinity,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: Text(
-                                    title,
-                                    textAlign: TextAlign.center,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
+                                    child: Image.network(image,
+                                        fit: BoxFit.cover)),
+                                Text(title,
+                                    style: TextStyle(color: Colors.white)),
                               ],
                             ),
                           ),
