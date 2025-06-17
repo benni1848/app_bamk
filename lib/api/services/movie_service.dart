@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:app_bamk/api/model/movie_model.dart';
+import 'package:app_bamk/domain/entities/movie_entity.dart';
 import 'package:http/http.dart' as http;
 
 class MovieService {

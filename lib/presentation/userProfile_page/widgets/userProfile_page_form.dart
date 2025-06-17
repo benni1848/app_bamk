@@ -1,3 +1,5 @@
+import 'package:app_bamk/presentation/userProfile_page/widgets/container_profilePicture.dart';
+import 'package:app_bamk/presentation/userProfile_page/widgets/container_profileInformation.dart';
 import 'package:flutter/material.dart';
 
 class UserprofileForm extends StatefulWidget {
@@ -10,12 +12,14 @@ class UserprofileForm extends StatefulWidget {
 class _UserprofileFormState extends State<UserprofileForm> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
+    return Scaffold(
+      backgroundColor: Colors.black, // Hintergrund des Bodys
+      body: Column(
         children: [
-          Image.network("https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png"),
+          ContainerProfilePicture(),
+          ContainerProfileInformation(),
         ],
-      )
+      ),
     );
   }
 }

@@ -32,6 +32,7 @@ class DashboardPage extends StatelessWidget {
             ], // End of child
           ),
         ),
-        body: DashboardPageForm());
+        body: DashboardPageForm()
+    );
   }
 }

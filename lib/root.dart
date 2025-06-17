@@ -16,7 +16,6 @@ class _RootWidgetState extends State<RootWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       // Ansichten speichern
       body: IndexedStack(
         index: _currentIndex,
@@ -28,23 +27,21 @@ class _RootWidgetState extends State<RootWidget> {
       ),
 
       bottomNavigationBar: BottomNavigationBar(
-        // Ändern des aktuellen Indexes beim klicken auf ein Icon
-        onTap: (index){
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        currentIndex: _currentIndex,
-        unselectedItemColor: Colors.grey,
-        selectedItemColor: Colors.white,
-        backgroundColor: Color(0xff1a1a1a),
-        
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-          BottomNavigationBarItem(icon: Icon(Icons.search), label: "Search"),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
-        ]),
-      
+          // Ändern des aktuellen Indexes beim klicken auf ein Icon
+          onTap: (index) {
+            setState(() {
+              _currentIndex = index;
+            });
+          },
+          currentIndex: _currentIndex,
+          unselectedItemColor: Colors.grey,
+          selectedItemColor: Colors.white,
+          backgroundColor: Color(0xff1a1a1a),
+          items: [
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+            BottomNavigationBarItem(icon: Icon(Icons.search), label: "Search"),
+            BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
+          ]),
     );
   }
 }
