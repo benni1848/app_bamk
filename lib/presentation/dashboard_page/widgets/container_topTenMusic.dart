@@ -28,20 +28,20 @@ class ContainerTopTenMusic extends StatelessWidget {
             color: Color(0xFF1A1A1A),
           ),
           child: GridView.count(
-            scrollDirection: Axis.horizontal,
-            crossAxisCount: 2,
+            scrollDirection: Axis.horizontal, // Activate horizontal scroll
+            crossAxisCount: 2, // Create 2 rows
             padding: const EdgeInsets.all(15),
             children: List.generate(
-              10,
+              10, // Generate 10 items
               (index) {
                 return Column(
                   children: [
-                    Image.asset(
+                    Image.asset(  // Insert MusicCover
                       "assets/film.jpg",
                       height: 110,
                     ),
                     Text(
-                      "${index + 1}.",
+                      "${index + 1}.",  // Insert current Index
                       style: const TextStyle(color: Color(0xFFFFFFFF)),
                     ),
                   ],
