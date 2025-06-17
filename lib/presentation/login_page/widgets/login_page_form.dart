@@ -27,7 +27,7 @@ class _LoginPageFormState extends State<LoginPageForm> {
         if (state is AuthSuccess) {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const DashboardPage()),
+            MaterialPageRoute(builder: (context) => const app.RootWidget()),
           );
         }
       },

@@ -3,6 +3,7 @@ import 'package:app_bamk/presentation/dashboard_page/dashboard_page.dart';
 import 'package:app_bamk/presentation/login_page/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:app_bamk/root.dart' as app;
 
 class AuthGate extends StatelessWidget {
   const AuthGate({super.key});
@@ -52,7 +53,7 @@ class AuthGate extends StatelessWidget {
         }
 
         if (snapshot.data == true) {
-          return const DashboardPage();
+          return const app.RootWidget();
         } else {
           return const LoginPage();
         }
