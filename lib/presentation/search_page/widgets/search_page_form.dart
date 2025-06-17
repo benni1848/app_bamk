@@ -52,6 +52,10 @@ class _SearchPageFormState extends State<SearchPageForm> {
       final games = await GameService.fetchGames();
       final music = await MusicService.fetchMusic();
 
+      movies.sort((a, b) => b.published.compareTo(a.published));
+      games.sort((a, b) => b.releaseDate.compareTo(a.releaseDate));
+      music.sort((a, b) => b.releaseDate.compareTo(a.releaseDate));
+
       final genreSet = <String>{};
       List<Object> filteredItems;
 
