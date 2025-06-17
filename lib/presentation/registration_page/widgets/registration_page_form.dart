@@ -1,3 +1,4 @@
+import 'package:app_bamk/presentation/login_page/login_page.dart';
 import 'package:app_bamk/presentation/registration_page/widgets/custom_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -108,7 +109,10 @@ class _RegistrationPageFormState extends State<RegistrationPageForm> {
           const SizedBox(height: 24),
           TextButton(
             onPressed: () {
-              Navigator.pushNamed(context, "/register");
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => LoginPage()),
+              );
             },
             child: const Text(
               "Du hast bereits ein Konto? Hier anmelden!",

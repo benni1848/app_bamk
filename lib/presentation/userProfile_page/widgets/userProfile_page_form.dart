@@ -1,3 +1,7 @@
+import 'package:app_bamk/api/services/auth_service.dart';
+import 'package:app_bamk/presentation/login_page/login_page.dart';
+import 'package:app_bamk/presentation/userProfile_page/widgets/container_profilePicture.dart';
+import 'package:app_bamk/presentation/userProfile_page/widgets/container_profileInformation.dart';
 import 'package:flutter/material.dart';
 
 class UserprofileForm extends StatefulWidget {
@@ -10,12 +14,26 @@ class UserprofileForm extends StatefulWidget {
 class _UserprofileFormState extends State<UserprofileForm> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
+    return Form(
+      child: ListView(
         children: [
-          Image.network("https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png"),
+          ContainerProfilePicture(),
+          TextButton(
+            child: Text("Logout"),
+            onPressed: () async {
+              final authService = AuthService(); // Lokale Instanz erstellen
+              await authService.logout();
+
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginPage()),
+                (route) => false,
+              );
+            },
+          ),
+          ContainerProfileInformation(),
         ],
-      )
+      ),
     );
   }
 }

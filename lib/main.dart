@@ -1,15 +1,14 @@
 import 'package:app_bamk/application/bloc/bloc/auth_bloc.dart';
-import 'package:app_bamk/presentation/login_page/login_page.dart';
-import 'package:app_bamk/presentation/registration_page/registration_page.dart';
+import 'package:app_bamk/presentation/auth_gate/auth_gate.dart';
+import 'package:app_bamk/root.dart' as app;
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:app_bamk/api/services/auth_service.dart';
-import 'package:app_bamk/root.dart' as app;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: "assets/.env");
+  await dotenv.load(fileName: ".env"); //.env im Projekt-Root abgelegt
 
   final authService = AuthService(); //Instanz anlegen
 
@@ -28,8 +27,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      //home: app.RootWidget(), //BottomNavigationBar hinzufügen
-      home: LoginPage(),
+      home: app.RootWidget(), //BottomNavigationBar hinzufügen
+      //home: const AuthGate(),
       // home: RegistrationPage(),
       title: "BAMK Rating",
 
