@@ -6,19 +6,26 @@ part 'auth_event.dart';
 part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  final AuthService authService; // Fügt AuthService für API-Aufrufe hinzu
+  final AuthService authService;
 
   AuthBloc({required this.authService}) : super(AuthInitial()) {
     on<UserLoginEvent>((event, emit) async {
-      emit(AuthLoading()); //  Zeigt Ladezustand an
+      emit(AuthLoading());
 
       try {
         final token = await authService.loginUser(
-            event.username, event.password); // API-Aufruf
-        emit(AuthSuccess(
-            token as String)); // Erfolgreicher Login (Token wird gespeichert)
-      } catch (_) {
-        emit(AuthFailed()); // Fehler behandeln
+          event.username,
+          event.password,
+        );
+
+        if (token != null) {
+          emit(AuthSuccess(token)); // Login erfolgreich, Token vorhanden
+        } else {
+          emit(AuthFailed()); // Login fehlgeschlagen
+        }
+      } catch (e) {
+        print("Fehler im Login Bloc: $e");
+        emit(AuthFailed());
       }
     });
 
@@ -27,20 +34,30 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       try {
         final success = await authService.registerUser(
-            event.username, event.password); // API-Aufruf
+          event.username,
+          event.password,
+        );
+
         if (success) {
-          emit(AuthSuccess("Registrierung erfolgreich!"));
+          final token = await authService.getToken();
+          emit(AuthSuccess(token ?? "Registrierung erfolgreich"));
         } else {
           emit(AuthFailed());
         }
-      } catch (_) {
+      } catch (e) {
+        print("Fehler im Register Bloc: $e");
         emit(AuthFailed());
       }
     });
 
     on<UserLogoutEvent>((event, emit) async {
-      await authService.logout(); // Entfernt das Token
-      emit(AuthInitial()); // Zurücksetzen des States nach Logout
+      try {
+        await authService.logout();
+        emit(AuthInitial());
+      } catch (e) {
+        print("Fehler im Logout Bloc: $e");
+        emit(AuthFailed());
+      }
     });
   }
 }

@@ -180,25 +180,40 @@ class _SearchPageFormState extends State<SearchPageForm> {
                         final image = (item as dynamic).coverImage;
 
                         return InkWell(
-                          onTap: () {
+                          onTap: () async {
+                            String? selectedGenre;
+
                             if (item is MovieEntity) {
-                              Navigator.push(
+                              selectedGenre = await Navigator.push<String?>(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (_) => FilmPage(movie: item)),
+                                  builder: (_) => FilmPage(movie: item),
+                                ),
                               );
                             } else if (item is GameEntity) {
-                              Navigator.push(
+                              selectedGenre = await Navigator.push<String?>(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (_) => GamePage(game: item)),
+                                  builder: (_) => GamePage(game: item),
+                                ),
                               );
                             } else if (item is MusicEntity) {
-                              Navigator.push(
+                              selectedGenre = await Navigator.push<String?>(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (_) => MusicPage(music: item)),
+                                  builder: (_) => MusicPage(music: item),
+                                ),
                               );
+                            }
+
+                            if (selectedGenre != null && mounted) {
+                              setState(() {
+                                if (!selectedGenres.contains(selectedGenre)) {
+                                  selectedGenres = [
+                                    selectedGenre!
+                                  ]; // Nur dieses Genre auswählen
+                                }
+                              });
                             }
                           },
                           borderRadius: BorderRadius.circular(12),
@@ -240,8 +255,7 @@ class _SearchPageFormState extends State<SearchPageForm> {
                             ),
                           ),
                         );
-                      },
-                    ),
+                      }),
             ),
         ],
       ),
