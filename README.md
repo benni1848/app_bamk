@@ -2,6 +2,8 @@
 
 A new Flutter project.
 
+Backend: https://github.com/benni1848/app_bamk_backend
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.

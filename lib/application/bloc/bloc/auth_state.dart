@@ -3,10 +3,15 @@ part of 'auth_bloc.dart';
 @immutable
 sealed class AuthState {}
 
-final class AuthInitial extends AuthState {}
+final class AuthInitial extends AuthState {} //  Startzustand
 
-final class AuthSuccess extends AuthState {}
+final class AuthLoading extends AuthState {} //  Zeigt Ladezustand an
 
-final class AuthFailed extends AuthState {}
+final class AuthSuccess extends AuthState {
+  final String messageOrToken; //  Speichert den Token oder Erfolgsmeldung
 
-final class AuthLoading extends AuthState {}
+  AuthSuccess(this.messageOrToken);
+}
+
+final class AuthFailed
+    extends AuthState {} // Fehlgeschlagen (z. B. falsche Login-Daten)

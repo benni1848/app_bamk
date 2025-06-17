@@ -1,14 +1,23 @@
-import 'package:app_bamk/presentation/film_page/film_page.dart';
-import 'package:app_bamk/presentation/login_page/login_page.dart';
-import 'package:app_bamk/presentation/registration_page/registration_page.dart';
-import 'package:app_bamk/presentation/search_page/search_page.dart';
-import 'package:app_bamk/presentation/ticketView_page/ticketView_page.dart';
-import 'package:app_bamk/presentation/userProfile_page/userProfile_page.dart';
-import 'package:flutter/material.dart';
+import 'package:app_bamk/application/bloc/bloc/auth_bloc.dart';
+import 'package:app_bamk/presentation/auth_gate/auth_gate.dart';
 import 'package:app_bamk/root.dart' as app;
+import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:app_bamk/api/services/auth_service.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env"); //.env im Projekt-Root abgelegt
+
+  final authService = AuthService(); //Instanz anlegen
+
+  runApp(
+    BlocProvider(
+      create: (_) => AuthBloc(authService: authService), //Bloc bereitstellen
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -19,6 +28,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: app.RootWidget(), //BottomNavigationBar hinzufügen
+      //home: const AuthGate(),
+      // home: RegistrationPage(),
       title: "BAMK Rating",
 
       /*initialRoute: "/", //Anpassen, um direkt in die Ansicht zu starten

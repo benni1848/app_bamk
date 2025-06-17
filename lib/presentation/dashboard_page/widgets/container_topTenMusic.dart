@@ -9,12 +9,12 @@ class ContainerTopTenMusic extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Padding(
-          padding: EdgeInsets.only(left: 12),
+          padding: EdgeInsets.only(left: 12, top: 0),
           child: Text(
             "Top 10 Musik",
             style: TextStyle(
               color: Color(0xFF80B5E9),
-              fontSize: 20,
+              fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
           ),

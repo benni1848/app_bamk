@@ -14,12 +14,12 @@ class _ContainerTopTenMovieState extends State<ContainerTopTenMovie> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Padding(
-          padding: EdgeInsets.only(left: 12, top: 8),
+          padding: EdgeInsets.only(left: 12, top: 0),
           child: Text(
             "Top 10 Filme",
             style: TextStyle(
               color: Color(0xFF80B5E9),
-              fontSize: 20,
+              fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
           ),
