@@ -7,9 +7,12 @@ class TicketService {
   static const String baseUrl = 'http://192.168.2.216:3000/tickets';
 
   // Neues Ticket senden mit Validierung
-  static Future<void> sendTicket(String user, String message) async {
+  static Future<void> sendTicket(
+    String userName,
+    String message,
+  ) async {
     // Überprüfung: Falls eines der Felder leer ist, wird das Ticket nicht gesendet
-    if (user.isEmpty || message.isEmpty) {
+    if (userName.isEmpty || message.isEmpty) {
       throw Exception("Benutzername und Nachricht dürfen nicht leer sein!");
     }
 
@@ -17,11 +20,11 @@ class TicketService {
       final response = await http.post(
         Uri.parse(baseUrl),
         headers: {"Content-Type": "application/json"},
-        body: jsonEncode({"user": user, "message": message}),
+        body: jsonEncode({"userName": userName, "message": message}),
       );
 
-      if (response.statusCode == 200) {
-        print("Ticket erfolgreich gesendet!");
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        print("Ticket erfolgreich gesendet: ${response.body}");
       } else {
         throw Exception("Fehler beim Senden des Tickets: ${response.body}");
       }
@@ -49,7 +52,7 @@ class TicketService {
       }
     } catch (e) {
       print("Netzwerkfehler beim Abrufen der Tickets: $e");
-      return []; // 🔹 Gibt eine **leere Liste** zurück, um `null`-Fehler zu vermeiden
+      return []; // Gibt eine **leere Liste** zurück, um `null`-Fehler zu vermeiden
     }
   }
 }
