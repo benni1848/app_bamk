@@ -5,21 +5,21 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:app_bamk/api/services/auth_service.dart';
 
-/*void main() async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env"); //.env im Projekt-Root abgelegt //  <------------- Emulator testing
   final apiUrl = dotenv.env['API_URL'] ?? 'http://localhost:3000';
   print("Geladene API-URL aus .env: $apiUrl");
-  final authService = AuthService(); //Instanz anlegen*/
+  final authService = AuthService(); //Instanz anlegen
 
-void main() async {
+/*void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: "assets/.env"); // <--------------Physical Testing
   print("API aus assets/.env: ${dotenv.env['API_BASE_URL']}");
   final apiUrl = dotenv.env['API_URL'] ?? '192.168.2.216:3000';
   print("Geladene API-URL aus assets/.env: $apiUrl");
   final authService = AuthService(); //Instanz anlegen
-
+*/
   runApp(
     BlocProvider(
       create: (_) => AuthBloc(authService: authService), //Bloc bereitstellen
