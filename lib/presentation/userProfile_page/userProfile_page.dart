@@ -1,5 +1,4 @@
 import 'package:app_bamk/presentation/userProfile_page/widgets/userProfile_page_form.dart';
-import 'package:app_bamk/presentation/userProfile_page/widgets/userProfile_page_form_test.dart';
 import 'package:flutter/material.dart';
 
 class UserProfile extends StatelessWidget {
@@ -34,6 +33,6 @@ class UserProfile extends StatelessWidget {
           ),
         ),
         //body: UserprofileForm());
-        body: UserProfileFormTest());
+        body: UserProfileForm());
   }
 }
