@@ -15,7 +15,10 @@ class GamePage extends StatelessWidget {
         backgroundColor: const Color(0xFF80B5E9),
         title: Text("Gameübersicht"),
       ),
-      body: GamePageForm(game: game),
+      body: GamePageForm(
+        game: game,
+        username: '',
+      ),
     );
   }
 }

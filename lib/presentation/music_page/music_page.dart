@@ -15,7 +15,7 @@ class MusicPage extends StatelessWidget {
         backgroundColor: const Color(0xFF80B5E9),
         title: Text("Musikübersicht"),
       ),
-      body: MusicPageForm(music: music),
+      body: MusicPageForm(music: music, username: ''),
     );
   }
 }
