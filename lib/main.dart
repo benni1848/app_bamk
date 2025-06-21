@@ -9,6 +9,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env"); //.env im Projekt-Root abgelegt //  <------------- Emulator testing
   final apiUrl = dotenv.env['API_URL'] ?? 'http://localhost:3000';
+  //final apiUrl = dotenv.env['API_BASE_URL'] ?? 'FAILEDtoLOAD';
   print("Geladene API-URL aus .env: $apiUrl");
   final authService = AuthService(); //Instanz anlegen
 

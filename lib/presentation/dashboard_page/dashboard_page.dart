@@ -1,4 +1,5 @@
 import 'package:app_bamk/presentation/dashboard_page/widgets/dashboard_page_form.dart';
+import 'package:app_bamk/presentation/dashboard_page/widgets/dashboard_top10_page_form.dart';
 import 'package:flutter/material.dart';
 
 class DashboardPage extends StatelessWidget {
@@ -32,7 +33,7 @@ class DashboardPage extends StatelessWidget {
             ], // End of child
           ),
         ),
-        body: DashboardPageForm()
+        body: DashboardTop10PageForm(),
     );
   }
 }
