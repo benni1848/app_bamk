@@ -43,6 +43,7 @@ dependencies:
   http: ^1.4.0
   shared_preferences: ^2.5.3
   flutter_dotenv: ^5.2.1
+  provider: ^6.1.5
 
 
 dev_dependencies:

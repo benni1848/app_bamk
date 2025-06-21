@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 
 class MovieService {
   static final String? baseUrl = dotenv.env['API_BASE_URL'];
+  final url = Uri.parse('$baseUrl/comments');
 
   // Fetch all movies
   static Future<List<MovieModel>> fetchMovies() async {

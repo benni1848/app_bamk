@@ -1,6 +1,7 @@
 import 'package:app_bamk/application/bloc/bloc/auth_bloc.dart';
 import 'package:app_bamk/presentation/registration_page/registration_page.dart';
 import 'package:app_bamk/presentation/registration_page/widgets/custom_textfield.dart';
+import 'package:app_bamk/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:app_bamk/root.dart' as app;
@@ -24,6 +25,8 @@ class _LoginPageFormState extends State<LoginPageForm> {
       bloc: authBloc,
       listener: (context, state) {
         if (state is AuthSuccess) {
+          final username = _usernameController.text.trim();
+          context.read<UserProvider>().login(username); //save User in Provider
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const app.RootWidget()),

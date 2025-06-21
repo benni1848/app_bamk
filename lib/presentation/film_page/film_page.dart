@@ -15,7 +15,10 @@ class FilmPage extends StatelessWidget {
         backgroundColor: const Color(0xFF80B5E9),
         title: Text("Filmübersicht"),
       ),
-      body: FilmPageForm(movie: movie),
+      body: FilmPageForm(
+        movie: movie,
+        username: '',
+      ),
     );
   }
 }

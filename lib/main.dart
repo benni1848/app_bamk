@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:app_bamk/api/services/auth_service.dart';
+import 'package:provider/provider.dart';
+import 'providers/user_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,7 +15,8 @@ void main() async {
   print("Geladene API-URL aus .env: $apiUrl");
   final authService = AuthService(); //Instanz anlegen
 
-/*void main() async {
+/*
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: "assets/.env"); // <--------------Physical Testing
   print("API aus assets/.env: ${dotenv.env['API_BASE_URL']}");
@@ -21,9 +24,13 @@ void main() async {
   print("Geladene API-URL aus assets/.env: $apiUrl");
   final authService = AuthService(); //Instanz anlegen
 */
+
   runApp(
-    BlocProvider(
-      create: (_) => AuthBloc(authService: authService), //Bloc bereitstellen
+    MultiProvider(
+      providers: [
+        BlocProvider(create: (_) => AuthBloc(authService: authService)),
+        ChangeNotifierProvider(create: (_) => UserProvider()),
+      ],
       child: const MyApp(),
     ),
   );

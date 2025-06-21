@@ -1,14 +1,128 @@
+import 'dart:convert';
+import 'package:app_bamk/providers/user_provider.dart';
 import 'package:app_bamk/domain/entities/music_entity.dart';
 import 'package:app_bamk/presentation/music_page/widgets/music_tag.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:http/http.dart' as http;
 
-class MusicPageForm extends StatelessWidget {
+class MusicPageForm extends StatefulWidget {
   final MusicEntity music;
 
-  const MusicPageForm({super.key, required this.music});
+  const MusicPageForm(
+      {super.key, required this.music, required String username});
+
+  @override
+  State<MusicPageForm> createState() => _MusicPageFormState();
+}
+
+class _MusicPageFormState extends State<MusicPageForm> {
+  final _titleController = TextEditingController();
+  final _contentController = TextEditingController();
+  List<Map<String, dynamic>> _comments = [];
+  bool _isLoadingComments = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchComments();
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _contentController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _fetchComments() async {
+    try {
+      final baseUrl = dotenv.env['API_BASE_URL'];
+      final response = await http.get(Uri.parse('$baseUrl/comments'));
+      final all = List<Map<String, dynamic>>.from(jsonDecode(response.body));
+      final filtered = all
+          .where((c) =>
+              c['mediatype'].toString() == '3' &&
+              c['id'].toString() == widget.music.id.toString())
+          .toList();
+      filtered.sort((a, b) => DateTime.parse(b['erstelltAm'])
+          .compareTo(DateTime.parse(a['erstelltAm'])));
+      setState(() {
+        _comments = filtered;
+        _isLoadingComments = false;
+      });
+    } catch (_) {
+      setState(() => _isLoadingComments = false);
+    }
+  }
+
+  Future<void> _submitComment() async {
+    final username = context.read<UserProvider>().username ?? "Anonym";
+    final comment = {
+      "title": _titleController.text.trim(),
+      "inhalt": _contentController.text.trim(),
+      "id": widget.music.id.toString(),
+      "username": username,
+    };
+
+    try {
+      final baseUrl = dotenv.env['API_BASE_URL'];
+      final url = Uri.parse('$baseUrl/comments/music');
+      final response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(comment),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        _titleController.clear();
+        _contentController.clear();
+        await _fetchComments();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Kommentar erfolgreich gesendet!")),
+        );
+      } else {
+        throw Exception("Fehlerhafte Antwort vom Server");
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Fehler beim Senden: $e")),
+      );
+    }
+  }
+
+  InputDecoration _inputDecoration(String label) {
+    return InputDecoration(
+      labelText: label,
+      filled: true,
+      fillColor: Colors.white10,
+      border: const OutlineInputBorder(),
+      labelStyle: const TextStyle(color: Colors.white),
+    );
+  }
+
+  Widget _buildDetail(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("$label: ",
+              style: const TextStyle(
+                  color: Colors.white, fontWeight: FontWeight.bold)),
+          Expanded(
+            child: Text(value, style: const TextStyle(color: Colors.white70)),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    final music = widget.music;
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -52,10 +166,8 @@ class MusicPageForm extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 24),
-          Text(
-            music.description,
-            style: const TextStyle(color: Colors.white70, fontSize: 16),
-          ),
+          Text(music.description,
+              style: const TextStyle(color: Colors.white70, fontSize: 16)),
           const SizedBox(height: 24),
           _buildDetail("Artist(s)", music.artist.join(", ")),
           _buildDetail("Album", music.album),
@@ -67,30 +179,72 @@ class MusicPageForm extends StatelessWidget {
           _buildDetail("Bewertung", "${music.rating} / 10"),
           _buildDetail("Dauer", "${music.duration} Sekunden"),
           const SizedBox(height: 24),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDetail(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "$label: ",
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
+          const Text("Kommentar schreiben:",
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold)),
+          const SizedBox(height: 12),
+          TextField(
+            controller: _titleController,
+            decoration: _inputDecoration("Titel"),
+            style: const TextStyle(color: Colors.white),
           ),
-          Expanded(
-            child: Text(
-              value,
-              style: const TextStyle(color: Colors.white70),
-            ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: _contentController,
+            maxLines: 3,
+            decoration: _inputDecoration("Kommentar"),
+            style: const TextStyle(color: Colors.white),
           ),
+          const SizedBox(height: 12),
+          ElevatedButton(
+            onPressed: _submitComment,
+            child: const Text("Absenden"),
+          ),
+          const SizedBox(height: 24),
+          const Text("Kommentare:",
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold)),
+          const SizedBox(height: 12),
+          if (_isLoadingComments)
+            const Center(child: CircularProgressIndicator())
+          else if (_comments.isEmpty)
+            const Text("Noch keine Kommentare vorhanden.",
+                style: TextStyle(color: Colors.white70))
+          else
+            ..._comments
+                .map((c) => Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.white10,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(c['title'] ?? '',
+                                style: const TextStyle(
+                                    color: Color(0xFF80B5E9),
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold)),
+                            const SizedBox(height: 4),
+                            Text(c['inhalt'] ?? '',
+                                style: const TextStyle(
+                                    color: Colors.white70, fontSize: 14)),
+                            const SizedBox(height: 4),
+                            Text("- ${c['username'] ?? 'unbekannt'}",
+                                style: const TextStyle(
+                                    color: Colors.white38, fontSize: 12)),
+                          ],
+                        ),
+                      ),
+                    ))
+                .toList(),
         ],
       ),
     );
