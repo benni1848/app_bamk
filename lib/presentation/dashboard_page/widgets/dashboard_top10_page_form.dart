@@ -40,16 +40,16 @@ class _DashboardTop10PageFormState extends State<DashboardTop10PageForm> {
         }
 
         final List<MovieModel> movies = snapshot.data![0] as List<MovieModel>;
-        final List<MusicModel> musicList =
-            snapshot.data![1] as List<MusicModel>;
+        final List<MusicModel> musicList = snapshot.data![1] as List<MusicModel>;
 
+        // ScrollView for Top 10
         return SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Area for Top 10 Movies
+                // Area for top 10 movie - Heading
                 Text(
                   "Top 10 Filme",
                   style: TextStyle(
@@ -62,6 +62,7 @@ class _DashboardTop10PageFormState extends State<DashboardTop10PageForm> {
                 Container(
                   height: 250,
                   color: Color(0xFF1a1a1a),
+                  // Area for top 10 movie - Items
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemCount: movies.length,
@@ -75,12 +76,14 @@ class _DashboardTop10PageFormState extends State<DashboardTop10PageForm> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
+                              // Area for MovieCover
                               SizedBox(
                                 height: 200,
                                 width: 150,
                                 child: Image.network(movie.coverImage,
                                     fit: BoxFit.cover),
                               ),
+                               // Area for MovieIndex
                               SizedBox(height: 5),
                               Text(
                                 '- ${index + 1} -',
@@ -101,7 +104,7 @@ class _DashboardTop10PageFormState extends State<DashboardTop10PageForm> {
 
                 SizedBox(height: 30),
 
-                // Area for top 10 Musik
+                // Area for top 10 musik - Heading
                 Text(
                   "Top 10 Musik",
                   style: TextStyle(
@@ -114,6 +117,7 @@ class _DashboardTop10PageFormState extends State<DashboardTop10PageForm> {
                 Container(
                   height: 250,
                   color: Color(0xFF1a1a1a),
+                  // Area for top 10 musik - items
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemCount: musicList.length,
@@ -127,12 +131,14 @@ class _DashboardTop10PageFormState extends State<DashboardTop10PageForm> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
+                              // Area for MusicCover
                               SizedBox(
                                 height: 200,
                                 width: 150,
                                 child: Image.network(music.coverImage,
                                     fit: BoxFit.cover),
                               ),
+                              // Area for MusicIndex
                               SizedBox(height: 5),
                               Text(
                                 '- ${index + 1} -',
