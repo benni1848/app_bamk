@@ -2,10 +2,8 @@ import 'package:app_bamk/api/services/auth_service.dart';
 import 'package:app_bamk/presentation/login_page/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:app_bamk/api/services/user_service.dart';
-import 'package:app_bamk/api/model/user_model.dart';
 import 'package:app_bamk/domain/entities/user_entity.dart';
 import 'package:app_bamk/api/services/comment_service.dart';
-import 'package:app_bamk/api/model/comment_model.dart';
 import 'package:app_bamk/domain/entities/comment_entity.dart';
 
 class UserProfileForm extends StatefulWidget {
@@ -21,11 +19,16 @@ class _UserProfileFormTestState extends State<UserProfileForm> {
   @override
   void initState() {
     super.initState();
-    _futureData = Future.wait([
-      // Feature for dynamic Username is following
-      UserService.fetchUserByUsername('Bamker'),
-      CommentService.fetchCommentByUsername('Bamker'),
-    ]);
+    final username = Provider.of<UserProvider>(context, listen: false).username;
+
+    if (username != null) {
+      _futureData = Future.wait([
+        UserService.fetchUserByUsername(username),
+        CommentService.fetchCommentByUsername(username),
+      ]);
+    } else {
+      _futureData = Future.error("Kein Benutzer eingeloggt");
+    }
   }
 
   @override
@@ -36,7 +39,12 @@ class _UserProfileFormTestState extends State<UserProfileForm> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
-          return Center(child: Text('Fehler: ${snapshot.error}'));
+          Future.microtask(() {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (_) => const LoginPage()),
+            );
+          });
+          return const Center(child: CircularProgressIndicator());
         } else if (!snapshot.hasData) {
           return const Center(child: Text('Keine Daten gefunden'));
         }
