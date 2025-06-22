@@ -34,20 +34,68 @@ class _MusicPageFormState extends State<MusicPageForm> {
     });
   }
 
-  Future<void> _vote(String value) async {
-    final prefs = await SharedPreferences.getInstance();
-    if (_userVote == value) {
-      // Gleiche Stimme nochmal gedrückt → zurücksetzen
-      await prefs.remove('music_vote_${widget.music.id}');
-      setState(() {
-        _userVote = null;
-      });
+  Future<void> _sendVoteToBackend(String? voteType) async {
+    setState(() => _isVoting = true);
+    final username = context.read<UserProvider>().username ?? "Anonym";
+    final baseUrl = dotenv.env['API_BASE_URL'];
+    final url = Uri.parse('$baseUrl/likes/post');
+
+    int vote;
+    if (voteType == "like") {
+      vote = 1;
+    } else if (voteType == "dislike") {
+      vote = -1;
     } else {
-      // Neue Stimme setzen
-      await prefs.setString('music_vote_${widget.music.id}', value);
-      setState(() {
-        _userVote = value;
-      });
+      vote = 0; // Zum Löschen
+    }
+
+    final payload = {
+      "username": username,
+      "id": widget.music.id.toString(),
+      "vote": vote.toString(),
+    };
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(payload),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        // Lokale Speicherung updaten
+        final prefs = await SharedPreferences.getInstance();
+        if (vote == 0) {
+          await prefs.remove('music_vote_${widget.music.id}');
+          setState(() => _userVote = null);
+        } else {
+          await prefs.setString('music_vote_${widget.music.id}', voteType!);
+          setState(() => _userVote = voteType);
+        }
+
+        // Feedback optional
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Vote erfolgreich gesendet")),
+        );
+      } else {
+        throw Exception("Vote fehlgeschlagen: ${response.body}");
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Fehler beim Voten: $e")),
+      );
+    } finally {
+      setState(() => _isVoting = false);
+    }
+  }
+
+  Future<void> _vote(String value) async {
+    if (_userVote == value) {
+      // Vote zurückziehen (entspricht vote = 0 im Backend)
+      await _sendVoteToBackend(null);
+    } else {
+      // Neuer Vote oder Änderung
+      await _sendVoteToBackend(value);
     }
   }
 
