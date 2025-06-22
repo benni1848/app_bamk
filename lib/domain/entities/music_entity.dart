@@ -10,7 +10,7 @@ class MusicEntity {
   final DateTime releaseDate;
   final List<String> imageUrls;
   final String description;
-  final double rating;
+  final int rating;
   final String coverImage;
   final String imageURL;
   final bool explicit;

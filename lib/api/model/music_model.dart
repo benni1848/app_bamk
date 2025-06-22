@@ -33,7 +33,7 @@ class MusicModel extends MusicEntity {
           ? DateTime.parse(json['releaseDate'])
           : DateTime(2000),
       description: json['description'] ?? '',
-      rating: (json['rating'] as num?)?.toDouble() ?? 0.0,
+      rating: (json['likes']),
       coverImage: json['coverImage'] ?? '',
       imageURL: json['imageURL'] ?? '',
       explicit: json['explicit']?.toString().toLowerCase() == 'true',

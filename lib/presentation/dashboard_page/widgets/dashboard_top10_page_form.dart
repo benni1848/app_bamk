@@ -1,7 +1,8 @@
-import 'package:app_bamk/api/services/comment_service.dart';
-import 'package:app_bamk/api/services/game_service.dart';
-import 'package:app_bamk/api/services/user_service.dart';
+// General
+import 'package:app_bamk/presentation/game_page/game_page.dart';
 import 'package:flutter/material.dart';
+import 'package:app_bamk/presentation/film_page/film_page.dart';
+import 'package:app_bamk/presentation/music_page/music_page.dart';
 // Music
 import 'package:app_bamk/api/services/music_service.dart';
 import 'package:app_bamk/api/model/music_model.dart';
@@ -18,6 +19,8 @@ import 'package:app_bamk/domain/entities/game_entity.dart';
 import 'package:app_bamk/api/services/comment_service.dart';
 import 'package:app_bamk/api/model/comment_model.dart';
 import 'package:app_bamk/domain/entities/comment_entity.dart';
+// User
+import 'package:app_bamk/api/services/user_service.dart';
 
 class DashboardTop10PageForm extends StatefulWidget {
   const DashboardTop10PageForm({super.key});
@@ -32,7 +35,6 @@ class _DashboardTop10PageFormState extends State<DashboardTop10PageForm> {
   @override
   void initState() {
     super.initState();
-    // Wait for both Services
     _futureData = Future.wait([
       MovieService.fetchtop10(),
       MusicService.fetchtop10(),
@@ -70,7 +72,7 @@ class _DashboardTop10PageFormState extends State<DashboardTop10PageForm> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Area for top 10 movie - Heading
+                // Are for top 10 Heading
                 Text(
                   "Top 10 Filme",
                   style: TextStyle(
@@ -84,41 +86,51 @@ class _DashboardTop10PageFormState extends State<DashboardTop10PageForm> {
                 Container(
                   height: 140,
                   color: Color(0xFF1a1a1a),
-                  // Area for top 10 movie - Items
+                  // Area for top 10 movie - items
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemCount: movieList.length,
                     itemBuilder: (context, index) {
                       final movie = movieList[index];
-                      return Padding(
-                        // Padding for MovieCover
-                        padding: const EdgeInsets.only(top: 10),
-                        child: Container(
-                          width: 80,
-                          // Margin between items
-                          margin: EdgeInsets.symmetric(horizontal: 5),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              // Area for MovieCover
-                              SizedBox(
-                                height: 100,
-                                width: 75,
-                                child: Image.network(movie.coverImage,
-                                    fit: BoxFit.cover),
-                              ),
-                              // Area for MovieIndex
-                              SizedBox(height: 5),
-                              Text(
-                                '- ${index + 1} -',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push<String?>(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => FilmPage(movie: movie),
+                            ),
+                          );
+                        },
+                        child: Padding(
+                          // Padding for MovieCover
+                          padding: const EdgeInsets.only(top: 10),
+                          child: Container(
+                            width: 80,
+                            // Margin between items
+                            margin: EdgeInsets.symmetric(horizontal: 5),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                // Area for MovieCover
+                                SizedBox(
+                                  height: 100,
+                                  width: 75,
+                                  child: Image.network(movie.coverImage,
+                                      fit: BoxFit.cover),
                                 ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
+                                // Area for MovieIndex
+                                SizedBox(height: 5),
+                                Text(
+                                  '- ${index + 1} -',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       );
@@ -148,41 +160,52 @@ class _DashboardTop10PageFormState extends State<DashboardTop10PageForm> {
                     itemCount: musicList.length,
                     itemBuilder: (context, index) {
                       final music = musicList[index];
-                      return Padding(
-                        // Padding for MovieCover
-                        padding: const EdgeInsets.only(top: 10),
-                        child: Container(
-                          width: 80,
-                          // Margin between items
-                          margin: EdgeInsets.symmetric(horizontal: 5),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              // Area for MusicCover
-                              SizedBox(
-                                height: 100,
-                                width: 75,
-                                child: Image.network(music.coverImage,
-                                    fit: BoxFit.cover),
-                              ),
-                              // Area for MusicIndex
-                              SizedBox(height: 5),
-                              Text(
-                                '- ${index + 1} -',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push<String?>(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => MusicPage(music: music),
+                            ),
+                          );
+                        },
+                        child: Padding(
+                          // Padding for MovieCover
+                          padding: const EdgeInsets.only(top: 10),
+                          child: Container(
+                            width: 80,
+                            // Margin between items
+                            margin: EdgeInsets.symmetric(horizontal: 5),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                // Area for MusicCover
+                                SizedBox(
+                                  height: 100,
+                                  width: 75,
+                                  child: Image.network(music.coverImage,
+                                      fit: BoxFit.cover),
                                 ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
+                                // Area for MusicIndex
+                                SizedBox(height: 5),
+                                Text(
+                                  '- ${index + 1} -',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       );
                     },
                   ),
                 ),
+                // Space between container top 10 Music & Games
                 SizedBox(height: 15),
 
                 // Area for top 10 games - Heading
@@ -205,35 +228,45 @@ class _DashboardTop10PageFormState extends State<DashboardTop10PageForm> {
                     itemCount: gameList.length,
                     itemBuilder: (context, index) {
                       final game = gameList[index];
-                      return Padding(
-                        // Padding for GameCover
-                        padding: const EdgeInsets.only(top: 10),
-                        child: Container(
-                          width: 80,
-                          // Margin between items
-                          margin: EdgeInsets.symmetric(horizontal: 5),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              // Area for GameCover
-                              SizedBox(
-                                height: 100,
-                                width: 75,
-                                child: Image.network(game.coverImage,
-                                    fit: BoxFit.cover),
-                              ),
-                              // Area for GameIndex
-                              SizedBox(height: 5),
-                              Text(
-                                '- ${index + 1} -',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push<String?>(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => GamePage(game: game),
+                            ),
+                          );
+                        },
+                        child: Padding(
+                          // Padding for GameCover
+                          padding: const EdgeInsets.only(top: 10),
+                          child: Container(
+                            width: 80,
+                            // Margin between items
+                            margin: EdgeInsets.symmetric(horizontal: 5),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                // Area for GameCover
+                                SizedBox(
+                                  height: 100,
+                                  width: 75,
+                                  child: Image.network(game.coverImage,
+                                      fit: BoxFit.cover),
                                 ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
+                                // Area for GameIndex
+                                SizedBox(height: 5),
+                                Text(
+                                  '- ${index + 1} -',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       );
@@ -302,8 +335,9 @@ class _DashboardTop10PageFormState extends State<DashboardTop10PageForm> {
                                               children: [
                                                 // Comment - Title
                                                 Text(
-                                                  "${comment.title}",  // extract only the date
-                                                  overflow: TextOverflow.ellipsis,
+                                                  comment.title, // extract only the date
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                   maxLines: 1,
                                                   softWrap: true,
                                                   style: const TextStyle(
@@ -317,7 +351,8 @@ class _DashboardTop10PageFormState extends State<DashboardTop10PageForm> {
                                                 Text(
                                                   comment.inhalt,
                                                   // Handle Overflow
-                                                  overflow: TextOverflow.ellipsis,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                   maxLines: 2,
                                                   softWrap: true,
                                                   style: const TextStyle(

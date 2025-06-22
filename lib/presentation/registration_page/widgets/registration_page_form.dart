@@ -19,114 +19,129 @@ class _RegistrationPageFormState extends State<RegistrationPageForm> {
 
   @override
   Widget build(BuildContext context) {
-    final authBloc =
-        BlocProvider.of<AuthBloc>(context); //  Holt AuthBloc aus BlocProvider
+    final authBloc = BlocProvider.of<AuthBloc>(context);
 
-    return Form(
-      child: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
-        children: [
-          const SizedBox(height: 80),
-          const Text(
-            "Erstelle dir hier ein Konto!",
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Color(0xFF80b5e9),
-              fontSize: 36,
-              fontWeight: FontWeight.bold,
+    return BlocListener<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state is AuthSuccess) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => LoginPage()),
+          );
+        }
+        // Optional: Fehlerbehandlung
+        if (state is AuthFailed) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Registrierung fehlgeschlagen")),
+          );
+        }
+      },
+      child: Form(
+        child: ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
+          children: [
+            const SizedBox(height: 80),
+            const Text(
+              "Erstelle dir hier ein Konto!",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Color(0xFF80b5e9),
+                fontSize: 36,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-          const SizedBox(height: 40),
-          CustomTextfield(
-            controller: _usernameController,
-            hinttext: "Benutzername",
-            icon: Icons.person,
-            validator: (value) {
-              return value!.isEmpty ? "Benutzername erforderlich!" : null;
-            },
-            hideText: false,
-          ),
-          const SizedBox(height: 16),
-          CustomTextfield(
-            controller: _passwordController,
-            hinttext: "Passwort",
-            icon: Icons.lock,
-            validator: (value) {
-              return value!.isEmpty ? "Passwort erforderlich!" : null;
-            },
-            hideText: true,
-          ),
-          const SizedBox(height: 16),
-          CustomTextfield(
-            controller: _passwordRepeatController,
-            hinttext: "Passwort Wiederholen",
-            icon: Icons.lock,
-            validator: (value) {
-              return value!.isEmpty
-                  ? "Passwort-Wiederholung erforderlich!"
-                  : null;
-            },
-            hideText: true,
-          ),
-          const SizedBox(height: 32),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF80b5e9),
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+            const SizedBox(height: 40),
+            CustomTextfield(
+              controller: _usernameController,
+              hinttext: "Benutzername",
+              icon: Icons.person,
+              validator: (value) {
+                return value!.isEmpty ? "Benutzername erforderlich!" : null;
+              },
+              hideText: false,
+            ),
+            const SizedBox(height: 16),
+            CustomTextfield(
+              controller: _passwordController,
+              hinttext: "Passwort",
+              icon: Icons.lock,
+              validator: (value) {
+                return value!.isEmpty ? "Passwort erforderlich!" : null;
+              },
+              hideText: true,
+            ),
+            const SizedBox(height: 16),
+            CustomTextfield(
+              controller: _passwordRepeatController,
+              hinttext: "Passwort Wiederholen",
+              icon: Icons.lock,
+              validator: (value) {
+                return value!.isEmpty
+                    ? "Passwort-Wiederholung erforderlich!"
+                    : null;
+              },
+              hideText: true,
+            ),
+            const SizedBox(height: 32),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF80b5e9),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                onPressed: () {
+                  if (_usernameController.text.isEmpty ||
+                      _passwordController.text.isEmpty ||
+                      _passwordRepeatController.text.isEmpty) {
+                    print("Fehler: Bitte alle Felder ausfüllen!");
+                    return;
+                  }
+
+                  if (_passwordController.text.trim() !=
+                      _passwordRepeatController.text.trim()) {
+                    print("Fehler: Passwörter stimmen nicht überein!");
+                    return;
+                  }
+
+                  authBloc.add(UserRegisterEvent(
+                    username: _usernameController.text
+                        .trim(), //Benutzername aus Controller holen
+                    password: _passwordController.text
+                        .trim(), //Passwort aus Controller holen
+                  ));
+                },
+                child: const Text(
+                  "Registrieren",
+                  style: TextStyle(fontSize: 18, color: Colors.white),
                 ),
               ),
+            ),
+            const SizedBox(height: 24),
+            TextButton(
               onPressed: () {
-                if (_usernameController.text.isEmpty ||
-                    _passwordController.text.isEmpty ||
-                    _passwordRepeatController.text.isEmpty) {
-                  print("Fehler: Bitte alle Felder ausfüllen!");
-                  return;
-                }
-
-                if (_passwordController.text.trim() !=
-                    _passwordRepeatController.text.trim()) {
-                  print("Fehler: Passwörter stimmen nicht überein!");
-                  return;
-                }
-
-                authBloc.add(UserRegisterEvent(
-                  username: _usernameController.text
-                      .trim(), //Benutzername aus Controller holen
-                  password: _passwordController.text
-                      .trim(), //Passwort aus Controller holen
-                ));
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginPage()),
+                );
               },
               child: const Text(
-                "Registrieren",
-                style: TextStyle(fontSize: 18, color: Colors.white),
+                "Du hast bereits ein Konto? Hier anmelden!",
+                style: TextStyle(color: Colors.white),
               ),
             ),
-          ),
-          const SizedBox(height: 24),
-          TextButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => LoginPage()),
-              );
-            },
-            child: const Text(
-              "Du hast bereits ein Konto? Hier anmelden!",
-              style: TextStyle(color: Colors.white),
+            Center(
+              child: Image.asset(
+                "assets/test.png",
+                height: 150,
+                width: 150,
+              ),
             ),
-          ),
-          Center(
-            child: Image.asset(
-              "assets/test.png",
-              height: 150,
-              width: 150,
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

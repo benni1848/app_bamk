@@ -9,21 +9,23 @@ import 'providers/user_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: ".env"); //.env im Projekt-Root abgelegt //  <------------- Emulator testing
+  await dotenv.load(
+      fileName:
+          ".env"); //.env im Projekt-Root abgelegt //  <------------- Emulator testing
   final apiUrl = dotenv.env['API_URL'] ?? 'http://localhost:3000';
   //final apiUrl = dotenv.env['API_BASE_URL'] ?? 'FAILEDtoLOAD';
   print("Geladene API-URL aus .env: $apiUrl");
   final authService = AuthService(); //Instanz anlegen
 
-/*
-void main() async {
+
+/*void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: "assets/.env"); // <--------------Physical Testing
   print("API aus assets/.env: ${dotenv.env['API_BASE_URL']}");
-  final apiUrl = dotenv.env['API_URL'] ?? '192.168.2.216:3000';
+  final apiUrl = dotenv.env['API_BASE_URL'] ?? '192.168.2.216:3000';
   print("Geladene API-URL aus assets/.env: $apiUrl");
   final authService = AuthService(); //Instanz anlegen
-*/
+  */
 
   runApp(
     MultiProvider(
@@ -44,7 +46,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       //home: app.RootWidget(), //BottomNavigationBar hinzufügen
-      home: const AuthGate(),
+      home: AuthGate(),
       // home: RegistrationPage(),
       title: "BAMK Rating",
 

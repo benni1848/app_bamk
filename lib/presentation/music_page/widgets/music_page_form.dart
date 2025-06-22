@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MusicPageForm extends StatefulWidget {
   final MusicEntity music;
@@ -22,11 +23,87 @@ class _MusicPageFormState extends State<MusicPageForm> {
   final _contentController = TextEditingController();
   List<Map<String, dynamic>> _comments = [];
   bool _isLoadingComments = true;
+  String? _userVote; // "like", "dislike", oder null
+  bool _isVoting = false;
+
+  Future<void> _loadUserVote() async {
+    final prefs = await SharedPreferences.getInstance();
+    final vote = prefs.getString('music_vote_${widget.music.id}');
+    setState(() {
+      _userVote = vote;
+    });
+  }
+
+  Future<void> _sendVoteToBackend(String? voteType) async {
+    setState(() => _isVoting = true);
+    final username = context.read<UserProvider>().username ?? "Anonym";
+    final baseUrl = dotenv.env['API_BASE_URL'];
+    final url = Uri.parse('$baseUrl/likes/post');
+
+    int vote;
+    if (voteType == "like") {
+      vote = 1;
+    } else if (voteType == "dislike") {
+      vote = -1;
+    } else {
+      vote = 0; // Zum Löschen
+    }
+
+    final payload = {
+      "username": username,
+      "id": widget.music.id.toString(),
+      "vote": vote.toString(),
+    };
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(payload),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        // Lokale Speicherung updaten
+        final prefs = await SharedPreferences.getInstance();
+        if (vote == 0) {
+          await prefs.remove('music_vote_${widget.music.id}');
+          setState(() => _userVote = null);
+        } else {
+          await prefs.setString('music_vote_${widget.music.id}', voteType!);
+          setState(() => _userVote = voteType);
+        }
+
+        // Feedback optional
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Vote erfolgreich gesendet")),
+        );
+      } else {
+        throw Exception("Vote fehlgeschlagen: ${response.body}");
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Fehler beim Voten: $e")),
+      );
+    } finally {
+      setState(() => _isVoting = false);
+    }
+  }
+
+  Future<void> _vote(String value) async {
+    if (_userVote == value) {
+      // Vote zurückziehen (entspricht vote = 0 im Backend)
+      await _sendVoteToBackend(null);
+    } else {
+      // Neuer Vote oder Änderung
+      await _sendVoteToBackend(value);
+    }
+  }
 
   @override
   void initState() {
     super.initState();
     _fetchComments();
+    _loadUserVote();
   }
 
   @override
@@ -176,8 +253,31 @@ class _MusicPageFormState extends State<MusicPageForm> {
           _buildDetail("Explizit", music.explicit ? "Ja" : "Nein"),
           _buildDetail("Veröffentlichung",
               "${music.releaseDate.day}.${music.releaseDate.month}.${music.releaseDate.year}"),
-          _buildDetail("Bewertung", "${music.rating} / 10"),
+          _buildDetail("Likes", "${music.rating} "),
           _buildDetail("Dauer", "${music.duration} Sekunden"),
+          const SizedBox(height: 24),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              IconButton(
+                onPressed: _isVoting ? null : () => _vote("like"),
+                icon: Icon(
+                  Icons.thumb_up,
+                  color: _userVote == "like" ? Colors.green : Colors.white70,
+                  size: 32,
+                ),
+              ),
+              const SizedBox(width: 24),
+              IconButton(
+                onPressed: _isVoting ? null : () => _vote("dislike"),
+                icon: Icon(
+                  Icons.thumb_down,
+                  color: _userVote == "dislike" ? Colors.red : Colors.white70,
+                  size: 32,
+                ),
+              ),
+            ],
+          ),
           const SizedBox(height: 24),
           const Text("Kommentar schreiben:",
               style: TextStyle(
@@ -215,36 +315,34 @@ class _MusicPageFormState extends State<MusicPageForm> {
             const Text("Noch keine Kommentare vorhanden.",
                 style: TextStyle(color: Colors.white70))
           else
-            ..._comments
-                .map((c) => Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      child: Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: Colors.white10,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(c['title'] ?? '',
-                                style: const TextStyle(
-                                    color: Color(0xFF80B5E9),
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold)),
-                            const SizedBox(height: 4),
-                            Text(c['inhalt'] ?? '',
-                                style: const TextStyle(
-                                    color: Colors.white70, fontSize: 14)),
-                            const SizedBox(height: 4),
-                            Text("- ${c['username'] ?? 'unbekannt'}",
-                                style: const TextStyle(
-                                    color: Colors.white38, fontSize: 12)),
-                          ],
-                        ),
-                      ),
-                    ))
-                .toList(),
+            ..._comments.map((c) => Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.white10,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(c['title'] ?? '',
+                            style: const TextStyle(
+                                color: Color(0xFF80B5E9),
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold)),
+                        const SizedBox(height: 4),
+                        Text(c['inhalt'] ?? '',
+                            style: const TextStyle(
+                                color: Colors.white70, fontSize: 14)),
+                        const SizedBox(height: 4),
+                        Text("- ${c['username'] ?? 'unbekannt'}",
+                            style: const TextStyle(
+                                color: Colors.white38, fontSize: 12)),
+                      ],
+                    ),
+                  ),
+                )),
         ],
       ),
     );

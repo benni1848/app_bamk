@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:app_bamk/providers/user_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:app_bamk/domain/entities/movie_entity.dart';
@@ -18,10 +19,28 @@ class FilmPageForm extends StatefulWidget {
   State<FilmPageForm> createState() => _FilmPageFormState();
 }
 
+class _OneToTenInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    final text = newValue.text;
+
+    if (text.isEmpty) return newValue;
+
+    final value = int.tryParse(text);
+    if (value == null || value < 1 || value > 10) {
+      return oldValue;
+    }
+
+    return newValue;
+  }
+}
+
 class _FilmPageFormState extends State<FilmPageForm> {
   late YoutubePlayerController _youtubeController;
   final _titleController = TextEditingController();
   final _contentController = TextEditingController();
+  final _ratingController = TextEditingController();
   List<Map<String, dynamic>> _comments = [];
   bool _isLoadingComments = true;
 
@@ -72,6 +91,7 @@ class _FilmPageFormState extends State<FilmPageForm> {
       "inhalt": _contentController.text.trim(),
       "id": widget.movie.id.toString(),
       "username": username,
+      "rating": _ratingController.text.trim()
     };
 
     try {
@@ -88,6 +108,7 @@ class _FilmPageFormState extends State<FilmPageForm> {
       if (response.statusCode == 200 || response.statusCode == 201) {
         _titleController.clear();
         _contentController.clear();
+        _ratingController.clear();
         await _fetchComments();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Kommentar erfolgreich gesendet!")),
@@ -177,7 +198,6 @@ class _FilmPageFormState extends State<FilmPageForm> {
               style: const TextStyle(color: Colors.white70, fontSize: 16)),
           const SizedBox(height: 24),
           _buildDetail("Regisseur", movie.director),
-          _buildDetail("Medium", movie.mediatype),
           _buildDetail("Dauer", "${movie.duration} Minuten"),
           _buildDetail("Veröffentlichung",
               "${movie.published.day}.${movie.published.month}.${movie.published.year}"),
@@ -211,6 +231,18 @@ class _FilmPageFormState extends State<FilmPageForm> {
             controller: _contentController,
             maxLines: 3,
             decoration: _inputDecoration("Kommentar"),
+            style: const TextStyle(color: Colors.white),
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: _ratingController,
+            keyboardType: TextInputType.number,
+            inputFormatters: [
+              FilteringTextInputFormatter.digitsOnly,
+              LengthLimitingTextInputFormatter(2),
+              _OneToTenInputFormatter(),
+            ],
+            decoration: _inputDecoration("Rating"),
             style: const TextStyle(color: Colors.white),
           ),
           const SizedBox(height: 12),
