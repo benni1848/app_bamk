@@ -1,5 +1,3 @@
-import 'package:app_bamk/api/services/auth_service.dart';
-import 'package:app_bamk/presentation/login_page/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:app_bamk/api/services/user_service.dart';
 import 'package:app_bamk/api/model/user_model.dart';
@@ -16,13 +14,15 @@ class UserProfileForm extends StatefulWidget {
 }
 
 class _UserProfileFormTestState extends State<UserProfileForm> {
+  //late Future<UserEntity> _futureUser;
+  //late Future<CommentEntity> _futureComment;
   late Future<List<dynamic>> _futureData;
 
   @override
   void initState() {
     super.initState();
+    // Wait for both Services
     _futureData = Future.wait([
-      // Feature for dynamic Username is following
       UserService.fetchUserByUsername('Bamker'),
       CommentService.fetchCommentByUsername('Bamker'),
     ]);
@@ -44,9 +44,9 @@ class _UserProfileFormTestState extends State<UserProfileForm> {
         final user = snapshot.data![0] as UserEntity;
         final comments = snapshot.data![1] as List<CommentEntity>;
 
-        return ListView(
+        return Column(
           children: [
-            // Container - UserProfile
+            //* Container for "Benutzerprofil"
             Container(
               height: 225,
               width: double.infinity,
@@ -55,17 +55,15 @@ class _UserProfileFormTestState extends State<UserProfileForm> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // UserProfile - Heading
-                  const Text(
-                    'Benutzerprofil',
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Color(0xFF80B5E9),
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  // Heading - Benutzerprofil
+                  Text('Benutzerprofil',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        color: Color(0xFF80B5E9),
+                        fontWeight: FontWeight.bold,
+                      )),
+                  // Area for ProfilePicture
                   Padding(
-                    // ProfilePicture
                     padding: const EdgeInsets.all(17),
                     child: ClipOval(
                       child: Image.network(
@@ -76,23 +74,21 @@ class _UserProfileFormTestState extends State<UserProfileForm> {
                       ),
                     ),
                   ),
-                  // Username & UserID
-                  Text(
-                    '${user.username} - ${user.id}',
-                    style: const TextStyle(
-                      fontSize: 18,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  // Area for Username
+                  Text('${user.username} - ${user.id}',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      )),
                   const SizedBox(height: 15),
                 ],
               ),
             ),
 
-            // Container - Comments
+            //* Container for "Meine Kommentare"
             Container(
-              height: 390,
+              height: 460,
               width: double.infinity,
               color: const Color(0xFF1a1a1a),
               margin: const EdgeInsets.only(top: 20),
@@ -100,7 +96,6 @@ class _UserProfileFormTestState extends State<UserProfileForm> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const SizedBox(height: 10),
-                  // Comments - Heading
                   const Text(
                     'Meine Kommentare',
                     style: TextStyle(
@@ -112,78 +107,91 @@ class _UserProfileFormTestState extends State<UserProfileForm> {
                   const SizedBox(height: 10),
                   Expanded(
                     child: ListView.builder(
+                      scrollDirection: Axis.vertical,
                       itemCount: comments.length,
                       itemBuilder: (context, index) {
                         final comment = comments[index];
                         return Padding(
                           padding: const EdgeInsets.all(10),
                           child: Container(
+                            width: 200,
                             margin: const EdgeInsets.symmetric(horizontal: 10),
-                            decoration: const BoxDecoration(
+                            decoration: BoxDecoration(
                               color: Color(0xFF80B5E9),
                             ),
                             child: Padding(
-                              padding: const EdgeInsets.all(10),
-                              child: Container(
-                                decoration: const BoxDecoration(
-                                  color: Colors.white54,
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(10),
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            // Comment - Title
-                                            Text(
-                                              comment.title,
-                                              style: const TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold,
-                                              ),
+                              padding: const EdgeInsets.all(5),
+                              child: Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: Container(
+                                  width: double.infinity,
+                                  margin: const EdgeInsets.all(5),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white54,
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(3),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        // Comments - left
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(10),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                // Comment - heading
+                                                Text(
+                                                  comment.title,
+                                                  style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                                // Comment - content
+                                                const SizedBox(height: 10),
+                                                Text(
+                                                  comment.inhalt,
+                                                  style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 14,
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 10),
+                                                // Rating
+                                                Text(
+                                                  "Bewertung: ${comment.rating} von 10",
+                                                  style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 10),
+                                              ],
                                             ),
-                                            const SizedBox(height: 10),
-                                            // Comment - Content
-                                            Text(
-                                              comment.inhalt,
-                                              style: const TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 14,
-                                              ),
-                                            ),
-                                            const SizedBox(height: 10),
-                                            // Comment - Rating
-                                            Text(
-                                              "Bewertung: ${comment.rating} von 10",
-                                              style: const TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      // Comment - ProfilePicture
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 10),
-                                        child: ClipOval(
-                                          child: Image.network(
-                                            user.profilePicture,
-                                            width: 75,
-                                            height: 75,
-                                            fit: BoxFit.cover,
                                           ),
                                         ),
-                                      ),
-                                    ],
+
+                                        // ProfilePicture - right
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 20, horizontal: 10),
+                                          child: ClipOval(
+                                            child: Image.network(
+                                              user.profilePicture,
+                                              width: 75,
+                                              height: 75,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
@@ -195,42 +203,10 @@ class _UserProfileFormTestState extends State<UserProfileForm> {
                   ),
                 ],
               ),
-            ),
-
-            // Function - Logout
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 75, vertical: 20),
-              child: TextButton(
-                style: TextButton.styleFrom(
-                  padding: const EdgeInsets.all(10),
-                  backgroundColor: const Color(0xFFE97F80),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                onPressed: () async {
-                  final authService = AuthService();
-                  await authService.logout();
-
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (context) => const LoginPage()),
-                    (route) => false,
-                  );
-                },
-                child: const Text(
-                  "Logout",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
-          ],
+            )
+          ], // End of Children
         );
-      },
+      }, // End of Builder
     );
   }
 }
