@@ -18,6 +18,18 @@ class CommentService {
     }
   }
 
+   //* Fetch all Comments
+  static Future<List<CommentModel>> fetchCommentLast() async {
+    final response = await http.get(Uri.parse('$baseUrl/comments/last10'));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> jsonData = json.decode(response.body);
+      return jsonData.map((json) => CommentModel.fromJson(json)).toList();
+    } else {
+      throw Exception('Fehler beim Laden der letzten 10 Kommentare');
+    }
+  }
+
   //* Fetch Comment by username
   static Future<List<CommentModel>> fetchCommentByUsername(String username) async {
     final response = await http.get(Uri.parse('$baseUrl/comments/$username'));

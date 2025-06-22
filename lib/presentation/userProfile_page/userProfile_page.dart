@@ -25,7 +25,7 @@ class UserProfile extends StatelessWidget {
                     style: TextStyle(
                       color: Color(0xffffffff),
                       fontWeight: FontWeight.bold,
-                    )
+                    ),
                   ),
                 ),
               ),

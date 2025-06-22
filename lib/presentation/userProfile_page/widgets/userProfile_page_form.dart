@@ -8,7 +8,6 @@ import 'package:app_bamk/api/services/comment_service.dart';
 import 'package:app_bamk/api/model/comment_model.dart';
 import 'package:app_bamk/domain/entities/comment_entity.dart';
 
-
 class UserProfileForm extends StatefulWidget {
   const UserProfileForm({super.key});
 
@@ -24,8 +23,8 @@ class _UserProfileFormTestState extends State<UserProfileForm> {
     super.initState();
     _futureData = Future.wait([
       // Feature for dynamic Username is following
-      UserService.fetchUserByUsername('Bamker'),
-      CommentService.fetchCommentByUsername('Bamker'),
+      UserService.fetchUserByUsername('Bumker'),
+      CommentService.fetchCommentByUsername('Bumker'),
     ]);
   }
 
@@ -45,7 +44,7 @@ class _UserProfileFormTestState extends State<UserProfileForm> {
         final user = snapshot.data![0] as UserEntity;
         final comments = snapshot.data![1] as List<CommentEntity>;
 
-        return Column(
+        return ListView(
           children: [
             // Container - UserProfile
             Container(
@@ -58,7 +57,7 @@ class _UserProfileFormTestState extends State<UserProfileForm> {
                 children: [
                   // UserProfile - Heading
                   const Text(
-                    'Benutzerprofil',
+                    'Dein Profil',
                     style: TextStyle(
                       fontSize: 18,
                       color: Color(0xFF80B5E9),
@@ -132,15 +131,20 @@ class _UserProfileFormTestState extends State<UserProfileForm> {
                                 child: Padding(
                                   padding: const EdgeInsets.all(10),
                                   child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Expanded(
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             // Comment - Title
                                             Text(
                                               comment.title,
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 2,
+                                              softWrap: true,
                                               style: const TextStyle(
                                                 color: Colors.black,
                                                 fontSize: 18,
@@ -151,6 +155,9 @@ class _UserProfileFormTestState extends State<UserProfileForm> {
                                             // Comment - Content
                                             Text(
                                               comment.inhalt,
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 2,
+                                              softWrap: true,
                                               style: const TextStyle(
                                                 color: Colors.black,
                                                 fontSize: 14,
@@ -171,12 +178,13 @@ class _UserProfileFormTestState extends State<UserProfileForm> {
                                       ),
                                       // Comment - ProfilePicture
                                       Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 15, horizontal: 10),
                                         child: ClipOval(
                                           child: Image.network(
                                             user.profilePicture,
-                                            width: 75,
-                                            height: 75,
+                                            width: 60,
+                                            height: 60,
                                             fit: BoxFit.cover,
                                           ),
                                         ),
