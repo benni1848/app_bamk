@@ -3,6 +3,7 @@ import 'package:app_bamk/providers/user_provider.dart';
 import 'package:app_bamk/domain/entities/game_entity.dart';
 import 'package:app_bamk/presentation/game_page/widgets/game_tag.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -17,10 +18,28 @@ class GamePageForm extends StatefulWidget {
   State<GamePageForm> createState() => _GamePageFormState();
 }
 
+class _OneToTenInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    final text = newValue.text;
+
+    if (text.isEmpty) return newValue;
+
+    final value = int.tryParse(text);
+    if (value == null || value < 1 || value > 10) {
+      return oldValue;
+    }
+
+    return newValue;
+  }
+}
+
 class _GamePageFormState extends State<GamePageForm> {
   late YoutubePlayerController _youtubeController;
   final _titleController = TextEditingController();
   final _contentController = TextEditingController();
+  final _ratingController = TextEditingController();
   List<Map<String, dynamic>> _comments = [];
   bool _isLoadingComments = true;
 
@@ -74,6 +93,7 @@ class _GamePageFormState extends State<GamePageForm> {
       "inhalt": _contentController.text.trim(),
       "id": widget.game.id.toString(),
       "username": username,
+      "rating": _ratingController.text.trim()
     };
 
     try {
@@ -88,6 +108,7 @@ class _GamePageFormState extends State<GamePageForm> {
       if (response.statusCode == 200 || response.statusCode == 201) {
         _titleController.clear();
         _contentController.clear();
+        _ratingController.clear();
         await _fetchComments();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Kommentar erfolgreich gesendet!")),
@@ -229,6 +250,18 @@ class _GamePageFormState extends State<GamePageForm> {
             controller: _contentController,
             maxLines: 3,
             decoration: _inputDecoration("Kommentar"),
+            style: const TextStyle(color: Colors.white),
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: _ratingController,
+            keyboardType: TextInputType.number,
+            inputFormatters: [
+              FilteringTextInputFormatter.digitsOnly,
+              LengthLimitingTextInputFormatter(2),
+              _OneToTenInputFormatter(),
+            ],
+            decoration: _inputDecoration("Rating"),
             style: const TextStyle(color: Colors.white),
           ),
           const SizedBox(height: 12),

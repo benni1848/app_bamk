@@ -93,6 +93,7 @@ class _FilmPageFormState extends State<FilmPageForm> {
       "inhalt": _contentController.text.trim(),
       "id": widget.movie.id.toString(),
       "username": username,
+      "rating": _ratingController.text.trim()
     };
 
     try {
@@ -109,6 +110,7 @@ class _FilmPageFormState extends State<FilmPageForm> {
       if (response.statusCode == 200 || response.statusCode == 201) {
         _titleController.clear();
         _contentController.clear();
+        _ratingController.clear();
         await _fetchComments();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Kommentar erfolgreich gesendet!")),
