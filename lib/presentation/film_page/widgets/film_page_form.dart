@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:app_bamk/presentation/search_page/search_page.dart';
 import 'package:app_bamk/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,7 +8,6 @@ import 'package:app_bamk/domain/entities/movie_entity.dart';
 import 'package:app_bamk/presentation/film_page/widgets/movie_tag.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
-import 'package:app_bamk/root.dart';
 
 class FilmPageForm extends StatefulWidget {
   final MovieEntity movie;

@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:app_bamk/api/model/user_model.dart';
-import 'package:app_bamk/domain/entities/user_entity.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 

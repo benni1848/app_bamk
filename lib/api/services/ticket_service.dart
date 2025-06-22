@@ -1,10 +1,11 @@
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:app_bamk/api/model/ticket_model.dart';
 import 'package:app_bamk/domain/entities/ticket_entity.dart';
 
 class TicketService {
-  static const String baseUrl = 'http://192.168.2.216:3000/tickets';
+  static String get baseUrl => '${dotenv.env['API_BASE_URL']}/tickets';
 
   // Neues Ticket senden mit Validierung
   static Future<void> sendTicket(

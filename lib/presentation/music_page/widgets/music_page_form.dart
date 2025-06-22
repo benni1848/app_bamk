@@ -24,7 +24,7 @@ class _MusicPageFormState extends State<MusicPageForm> {
   List<Map<String, dynamic>> _comments = [];
   bool _isLoadingComments = true;
   String? _userVote; // "like", "dislike", oder null
-  bool _isVoting = false;
+  final bool _isVoting = false;
 
   Future<void> _loadUserVote() async {
     final prefs = await SharedPreferences.getInstance();
@@ -315,36 +315,34 @@ class _MusicPageFormState extends State<MusicPageForm> {
             const Text("Noch keine Kommentare vorhanden.",
                 style: TextStyle(color: Colors.white70))
           else
-            ..._comments
-                .map((c) => Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      child: Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: Colors.white10,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(c['title'] ?? '',
-                                style: const TextStyle(
-                                    color: Color(0xFF80B5E9),
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold)),
-                            const SizedBox(height: 4),
-                            Text(c['inhalt'] ?? '',
-                                style: const TextStyle(
-                                    color: Colors.white70, fontSize: 14)),
-                            const SizedBox(height: 4),
-                            Text("- ${c['username'] ?? 'unbekannt'}",
-                                style: const TextStyle(
-                                    color: Colors.white38, fontSize: 12)),
-                          ],
-                        ),
-                      ),
-                    ))
-                .toList(),
+            ..._comments.map((c) => Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.white10,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(c['title'] ?? '',
+                            style: const TextStyle(
+                                color: Color(0xFF80B5E9),
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold)),
+                        const SizedBox(height: 4),
+                        Text(c['inhalt'] ?? '',
+                            style: const TextStyle(
+                                color: Colors.white70, fontSize: 14)),
+                        const SizedBox(height: 4),
+                        Text("- ${c['username'] ?? 'unbekannt'}",
+                            style: const TextStyle(
+                                color: Colors.white38, fontSize: 12)),
+                      ],
+                    ),
+                  ),
+                )),
         ],
       ),
     );
