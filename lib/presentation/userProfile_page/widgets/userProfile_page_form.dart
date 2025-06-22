@@ -8,7 +8,6 @@ import 'package:app_bamk/api/services/comment_service.dart';
 import 'package:app_bamk/api/model/comment_model.dart';
 import 'package:app_bamk/domain/entities/comment_entity.dart';
 
-
 class UserProfileForm extends StatefulWidget {
   const UserProfileForm({super.key});
 
@@ -45,7 +44,7 @@ class _UserProfileFormTestState extends State<UserProfileForm> {
         final user = snapshot.data![0] as UserEntity;
         final comments = snapshot.data![1] as List<CommentEntity>;
 
-        return Column(
+        return ListView(
           children: [
             // Container - UserProfile
             Container(
@@ -132,11 +131,13 @@ class _UserProfileFormTestState extends State<UserProfileForm> {
                                 child: Padding(
                                   padding: const EdgeInsets.all(10),
                                   child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Expanded(
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             // Comment - Title
                                             Text(
@@ -171,7 +172,8 @@ class _UserProfileFormTestState extends State<UserProfileForm> {
                                       ),
                                       // Comment - ProfilePicture
                                       Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 10),
                                         child: ClipOval(
                                           child: Image.network(
                                             user.profilePicture,

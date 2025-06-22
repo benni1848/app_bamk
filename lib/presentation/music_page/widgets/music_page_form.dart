@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MusicPageForm extends StatefulWidget {
   final MusicEntity music;
@@ -22,11 +23,39 @@ class _MusicPageFormState extends State<MusicPageForm> {
   final _contentController = TextEditingController();
   List<Map<String, dynamic>> _comments = [];
   bool _isLoadingComments = true;
+  String? _userVote; // "like", "dislike", oder null
+  bool _isVoting = false;
+
+  Future<void> _loadUserVote() async {
+    final prefs = await SharedPreferences.getInstance();
+    final vote = prefs.getString('music_vote_${widget.music.id}');
+    setState(() {
+      _userVote = vote;
+    });
+  }
+
+  Future<void> _vote(String value) async {
+    final prefs = await SharedPreferences.getInstance();
+    if (_userVote == value) {
+      // Gleiche Stimme nochmal gedrückt → zurücksetzen
+      await prefs.remove('music_vote_${widget.music.id}');
+      setState(() {
+        _userVote = null;
+      });
+    } else {
+      // Neue Stimme setzen
+      await prefs.setString('music_vote_${widget.music.id}', value);
+      setState(() {
+        _userVote = value;
+      });
+    }
+  }
 
   @override
   void initState() {
     super.initState();
     _fetchComments();
+    _loadUserVote();
   }
 
   @override
@@ -176,8 +205,31 @@ class _MusicPageFormState extends State<MusicPageForm> {
           _buildDetail("Explizit", music.explicit ? "Ja" : "Nein"),
           _buildDetail("Veröffentlichung",
               "${music.releaseDate.day}.${music.releaseDate.month}.${music.releaseDate.year}"),
-          _buildDetail("Bewertung", "${music.rating} / 10"),
+          _buildDetail("Likes", "${music.rating} "),
           _buildDetail("Dauer", "${music.duration} Sekunden"),
+          const SizedBox(height: 24),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              IconButton(
+                onPressed: _isVoting ? null : () => _vote("like"),
+                icon: Icon(
+                  Icons.thumb_up,
+                  color: _userVote == "like" ? Colors.green : Colors.white70,
+                  size: 32,
+                ),
+              ),
+              const SizedBox(width: 24),
+              IconButton(
+                onPressed: _isVoting ? null : () => _vote("dislike"),
+                icon: Icon(
+                  Icons.thumb_down,
+                  color: _userVote == "dislike" ? Colors.red : Colors.white70,
+                  size: 32,
+                ),
+              ),
+            ],
+          ),
           const SizedBox(height: 24),
           const Text("Kommentar schreiben:",
               style: TextStyle(
