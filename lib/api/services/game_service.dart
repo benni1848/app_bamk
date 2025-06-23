@@ -19,7 +19,7 @@ class GameService {
       final List<dynamic> jsonData = json.decode(response.body);
       return jsonData.map((json) => GameModel.fromJson(json)).toList();
     } else {
-      throw Exception('Fehler beim Laden der Filme');
+      throw Exception('Fehler beim Laden der Spiele');
     }
   }
 
@@ -31,9 +31,8 @@ class GameService {
     if (baseUrl == null) {
       throw Exception('API_BASE_URL aus .env nicht geladen!');
     }
-    
 
-    // Request for movies
+    // Request for games
     if (response.statusCode == 200) {
       final List<dynamic> jsonList = jsonDecode(response.body);
       return jsonList.map((json) => GameModel.fromJson(json)).toList();

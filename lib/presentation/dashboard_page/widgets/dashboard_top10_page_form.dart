@@ -6,21 +6,16 @@ import 'package:app_bamk/presentation/music_page/music_page.dart';
 // Music
 import 'package:app_bamk/api/services/music_service.dart';
 import 'package:app_bamk/api/model/music_model.dart';
-import 'package:app_bamk/domain/entities/music_entity.dart';
 // Movies
 import 'package:app_bamk/api/services/movie_service.dart';
 import 'package:app_bamk/api/model/movie_model.dart';
-import 'package:app_bamk/domain/entities/movie_entity.dart';
 // Games
 import 'package:app_bamk/api/services/game_service.dart';
 import 'package:app_bamk/api/model/game_model.dart';
-import 'package:app_bamk/domain/entities/game_entity.dart';
 // Comments
 import 'package:app_bamk/api/services/comment_service.dart';
 import 'package:app_bamk/api/model/comment_model.dart';
-import 'package:app_bamk/domain/entities/comment_entity.dart';
 // User
-import 'package:app_bamk/api/services/user_service.dart';
 
 class DashboardTop10PageForm extends StatefulWidget {
   const DashboardTop10PageForm({super.key});
@@ -335,7 +330,8 @@ class _DashboardTop10PageFormState extends State<DashboardTop10PageForm> {
                                               children: [
                                                 // Comment - Title
                                                 Text(
-                                                  comment.title, // extract only the date
+                                                  comment
+                                                      .title, // extract only the date
                                                   overflow:
                                                       TextOverflow.ellipsis,
                                                   maxLines: 1,

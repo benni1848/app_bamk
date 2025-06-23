@@ -2,14 +2,14 @@ import 'dart:convert';
 import 'package:app_bamk/presentation/dashboard_page/dashboard_page.dart';
 import 'package:app_bamk/presentation/login_page/login_page.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class AuthGate extends StatelessWidget {
   const AuthGate({super.key});
 
   Future<bool> _isTokenValid() async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString("jwt_token");
+    final storage = FlutterSecureStorage();
+    final token = await storage.read(key: "jwt_token");
     print("Token: $token");
 
     if (token == null) return false;
@@ -21,8 +21,8 @@ class AuthGate extends StatelessWidget {
       final payload = json.decode(
         utf8.decode(base64Url.decode(base64Url.normalize(parts[1]))),
       );
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString("username", payload["username"]);
+
+      /*await storage.write(key: "username", value: payload["username"]);*/
 
       final expiry = payload["exp"];
       final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;

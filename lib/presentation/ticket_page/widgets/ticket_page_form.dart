@@ -4,8 +4,7 @@ import 'package:app_bamk/domain/entities/ticket_entity.dart';
 
 class TicketsPageForm extends StatefulWidget {
   const TicketsPageForm(
-      {Key? key, required String userName, required TicketEntity ticket})
-      : super(key: key);
+      {super.key, required String userName, required TicketEntity ticket});
 
   @override
   _TicketsPageFormState createState() => _TicketsPageFormState();
