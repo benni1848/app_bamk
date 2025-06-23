@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class AuthService {
   final String baseUrl =
@@ -25,9 +25,10 @@ class AuthService {
         final data = jsonDecode(response.body);
         _token = data["token"];
 
+        print(_token);
         if (_token != null) {
-          final prefs = await SharedPreferences.getInstance();
-          await prefs.setString("jwt_token", _token!);
+          final storage = FlutterSecureStorage();
+          await storage.write(key: "jwt_token", value: _token);
         }
 
         print("Registrierung erfolgreich! Token gespeichert: $_token");
@@ -60,9 +61,9 @@ class AuthService {
         _token = data["token"];
 
         if (_token != null) {
-          final prefs = await SharedPreferences.getInstance();
-          await prefs.setString("jwt_token", _token!);
-          print("Login erfolgreich! Token gespeichert: $_token");
+          final storage = FlutterSecureStorage();
+          await storage.write(key: "jwt_token", value: _token);
+          print(_token);
           return _token;
         }
       } else {
@@ -75,16 +76,18 @@ class AuthService {
     return null;
   }
 
-  // Gibt gespeicherten Token zurück
+  // Read Token
   Future<String?> getToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString("jwt_token");
+    final storage = FlutterSecureStorage();
+    final token = storage.read(key:"jwt_token");
+    print(token);
+    return token;
   }
 
   // Logout-Funktion – löscht gespeicherten Token
   Future<void> logout() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove("jwt_token");
+    final storage = FlutterSecureStorage();
+    await storage.delete(key: "jwt_token");
     _token = null;
     print("Nutzer wurde abgemeldet! Token gelöscht.");
   }

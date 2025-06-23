@@ -40,4 +40,17 @@ class UserService {
       throw Exception('Fehler beim Laden des Benutzers');
     }
   }
+
+  //* Fetch UserData by Token
+  static Future<UserModel> fetchUserByToken(String token) async {
+    final response = await http.get(Uri.parse('$baseUrl/userdata/'),headers: {"authorization": token});
+    print("RESPONSE ${response}");
+
+    if (response.statusCode == 200) {
+      print("body ${response.body}");
+      return UserModel.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Fehler beim Laden des Benutzers');
+    }
+  }
 }

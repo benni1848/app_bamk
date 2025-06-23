@@ -51,13 +51,10 @@ class _DashboardTop10PageFormState extends State<DashboardTop10PageForm> {
           return const Center(child: Text('Keine Daten gefunden'));
         }
 
-        final List<MovieModel> movieList =
-            snapshot.data![0] as List<MovieModel>;
-        final List<MusicModel> musicList =
-            snapshot.data![1] as List<MusicModel>;
+        final List<MovieModel> movieList = snapshot.data![0] as List<MovieModel>;
+        final List<MusicModel> musicList = snapshot.data![1] as List<MusicModel>;
         final List<GameModel> gameList = snapshot.data![2] as List<GameModel>;
-        final List<CommentModel> commentList =
-            snapshot.data![3] as List<CommentModel>;
+        final List<CommentModel> commentList = snapshot.data![3] as List<CommentModel>;
 
         // ScrollView for Top 10
         return SingleChildScrollView(
@@ -134,7 +131,7 @@ class _DashboardTop10PageFormState extends State<DashboardTop10PageForm> {
                 ),
                 // Space betweeen container top 10 Movie & Music
                 SizedBox(height: 15),
-
+                
                 // Area for top 10 musik - Heading
                 Text(
                   "Top 10 Musik",
@@ -200,6 +197,7 @@ class _DashboardTop10PageFormState extends State<DashboardTop10PageForm> {
                     },
                   ),
                 ),
+                
                 // Space between container top 10 Music & Games
                 SizedBox(height: 15),
 
@@ -268,9 +266,10 @@ class _DashboardTop10PageFormState extends State<DashboardTop10PageForm> {
                     },
                   ),
                 ),
+                
                 // Space between container top 10 Games & following container
                 SizedBox(height: 15),
-
+                
                 // Area for the last 10 comments - Heading
                 Text(
                   "Die 10 letzten Kommentare",

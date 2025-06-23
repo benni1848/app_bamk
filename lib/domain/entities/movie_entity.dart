@@ -6,7 +6,6 @@ class MovieEntity {
   final String director;
   final int duration;
   final DateTime published;
-  final List<String> imageUrls;
   final String trailerUrl;
   final String description;
   final double rating;
@@ -20,7 +19,6 @@ class MovieEntity {
     required this.director,
     required this.duration,
     required this.published,
-    required this.imageUrls,
     required this.trailerUrl,
     required this.description,
     required this.rating,

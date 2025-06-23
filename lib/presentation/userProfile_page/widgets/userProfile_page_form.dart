@@ -8,6 +8,7 @@ import 'package:app_bamk/api/services/ticket_service.dart';
 import 'package:app_bamk/domain/entities/user_entity.dart';
 import 'package:app_bamk/domain/entities/comment_entity.dart';
 import 'package:app_bamk/providers/user_provider.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class UserProfileForm extends StatefulWidget {
   const UserProfileForm({super.key});
@@ -19,6 +20,7 @@ class UserProfileForm extends StatefulWidget {
 class _UserProfileFormState extends State<UserProfileForm> {
   late Future<List<dynamic>> _futureData;
 
+  /*
   @override
   void initState() {
     super.initState();
@@ -26,9 +28,12 @@ class _UserProfileFormState extends State<UserProfileForm> {
       final username =
           Provider.of<UserProvider>(context, listen: false).username;
       if (username != null) {
+        final storage = FlutterSecureStorage();
+        final token = storage.read(key: "jwt_token").toString();
         setState(() {
           _futureData = Future.wait([
-            UserService.fetchUserByUsername(username),
+
+            UserService.fetchUserByToken(token),
             CommentService.fetchCommentByUsername(username),
           ]);
         });
@@ -36,6 +41,15 @@ class _UserProfileFormState extends State<UserProfileForm> {
         _futureData = Future.error("Kein Benutzer eingeloggt");
       }
     });
+  }*/
+  @override
+  void initState() {
+    super.initState();
+    _futureData = Future.wait([
+      // Feature for dynamic Username is following
+      UserService.fetchUserByUsername('Kevin'),
+      CommentService.fetchCommentByUsername('Kevin'),
+    ]);
   }
 
   @override
