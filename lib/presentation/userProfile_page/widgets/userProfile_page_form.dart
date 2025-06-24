@@ -43,14 +43,30 @@ class _UserProfileFormState extends State<UserProfileForm> {
     });
   }*/
   @override
-  void initState() {
-    super.initState();
-    _futureData = Future.wait([
-      // Feature for dynamic Username is following
-      UserService.fetchUserByUsername('Kevin'),
-      CommentService.fetchCommentByUsername('Kevin'),
-    ]);
-  }
+void initState() {
+  super.initState();
+
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    final username = context.read<UserProvider>().username;
+
+    if (username != null) {
+      setState(() {
+        _futureData = Future.wait([
+          UserService.fetchUserByUsername(username),
+          CommentService.fetchCommentByUsername(username),
+        ]);
+      });
+    } else {
+      // Optional: Fehlerbehandlung oder Redirect
+      print('Kein Benutzername gefunden');
+    }
+  });
+}
+
+void reloadComments(){
+  final usernameForComments = context.read<UserProvider>().username;
+  CommentService.fetchCommentByUsername(usernameForComments);
+}
 
   @override
   Widget build(BuildContext context) {
@@ -77,6 +93,7 @@ class _UserProfileFormState extends State<UserProfileForm> {
 
         final user = snapshot.data![0] as UserEntity;
         final comments = snapshot.data![1] as List<CommentEntity>;
+        final username = context.watch<UserProvider>().username;
 
         return Scaffold(
           backgroundColor: const Color(0xFF000000),
@@ -94,6 +111,7 @@ class _UserProfileFormState extends State<UserProfileForm> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           const Text(
+                            // Test
                             'Dein Profil',
                             style: TextStyle(
                               fontSize: 18,

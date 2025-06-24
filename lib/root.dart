@@ -31,6 +31,7 @@ class _RootWidgetState extends State<RootWidget> {
           onTap: (index) {
             setState(() {
               _currentIndex = index;
+
             });
           },
           currentIndex: _currentIndex,
