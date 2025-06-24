@@ -8,6 +8,7 @@ import 'package:app_bamk/api/services/ticket_service.dart';
 import 'package:app_bamk/domain/entities/user_entity.dart';
 import 'package:app_bamk/domain/entities/comment_entity.dart';
 import 'package:app_bamk/providers/user_provider.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class UserProfileForm extends StatefulWidget {
   const UserProfileForm({super.key});
@@ -19,7 +20,7 @@ class UserProfileForm extends StatefulWidget {
 class _UserProfileFormState extends State<UserProfileForm> {
   late Future<List<dynamic>> _futureData;
 
-  @override
+@override
 void initState() {
   super.initState();
 
@@ -34,7 +35,6 @@ void initState() {
         ]);
       });
     } else {
-      // Optional: Fehlerbehandlung oder Redirect
       print('Kein Benutzername gefunden');
     }
   });
@@ -65,6 +65,7 @@ void initState() {
 
         final user = snapshot.data![0] as UserEntity;
         final comments = snapshot.data![1] as List<CommentEntity>;
+        final username = context.watch<UserProvider>().username;
 
         return Scaffold(
           backgroundColor: const Color(0xFF000000),
@@ -82,6 +83,7 @@ void initState() {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           const Text(
+                            // Test
                             'Dein Profil',
                             style: TextStyle(
                               fontSize: 18,

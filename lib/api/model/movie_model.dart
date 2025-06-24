@@ -9,7 +9,6 @@ class MovieModel extends MovieEntity {
     required super.director,
     required super.duration,
     required super.published,
-    required super.imageUrls,
     required super.trailerUrl,
     required super.description,
     required super.rating,
@@ -27,8 +26,6 @@ class MovieModel extends MovieEntity {
       published: json['releaseDate'] != null
           ? DateTime.parse(json['releaseDate'])
           : DateTime(2000),
-      imageUrls:
-          json['imageUrls'] != null ? List<String>.from(json['imageUrls']) : [],
       trailerUrl: json['trailerUrl'] ?? '',
       description: json['description'] ?? '',
       rating: (json['rating'] as num?)?.toDouble() ?? 0.0,
@@ -45,7 +42,6 @@ class MovieModel extends MovieEntity {
       'director': director,
       'duration': duration,
       'published': published.toIso8601String(),
-      'imageUrls': imageUrls,
       'trailerUrl': trailerUrl,
       'description': description,
       'rating': rating,

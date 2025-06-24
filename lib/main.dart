@@ -9,14 +9,11 @@ import 'providers/user_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(
-      fileName:
-          ".env"); //.env im Projekt-Root abgelegt //  <------------- Emulator testing
+  await dotenv.load(fileName:".env"); //.env im Projekt-Root abgelegt //  <------------- Emulator testing
   final apiUrl = dotenv.env['API_URL'] ?? 'http://localhost:3000';
   //final apiUrl = dotenv.env['API_BASE_URL'] ?? 'FAILEDtoLOAD';
   print("Geladene API-URL aus .env: $apiUrl");
   final authService = AuthService(); //Instanz anlegen
-   
 
 /*void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,6 +23,7 @@ void main() async {
   print("Geladene API-URL aus assets/.env: $apiUrl");
   final authService = AuthService(); //Instanz anlegen
 */
+
   runApp(
     MultiProvider(
       providers: [
