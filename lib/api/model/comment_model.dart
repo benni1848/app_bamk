@@ -12,6 +12,15 @@ class CommentModel extends CommentEntity {
 });
 
   factory CommentModel.fromJson(Map<String, dynamic> json) {
+    dynamic ratingValue = json['rating'];
+    String ratingStr;
+    if (ratingValue is int) {
+      ratingStr = ratingValue.toString();
+    } else if (ratingValue is String) {
+      ratingStr = ratingValue;
+    } else {
+      ratingStr = '';
+    }
     return CommentModel(
       id: json['id'] ?? '',
       title: json['title'] ?? '',
@@ -19,7 +28,7 @@ class CommentModel extends CommentEntity {
       username: json['username'] ?? '',
       mediatype: json['mediatype'] ?? '',
       erstelltAm: json['erstelltAm'] ?? '',
-      rating: json['rating'] ?? '',
+      rating: ratingStr,
     );
   }
 

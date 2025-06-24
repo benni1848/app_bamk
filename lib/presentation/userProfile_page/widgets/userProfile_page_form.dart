@@ -20,23 +20,25 @@ class _UserProfileFormState extends State<UserProfileForm> {
   late Future<List<dynamic>> _futureData;
 
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final username =
-          Provider.of<UserProvider>(context, listen: false).username;
-      if (username != null) {
-        setState(() {
-          _futureData = Future.wait([
-            UserService.fetchUserByUsername(username),
-            CommentService.fetchCommentByUsername(username),
-          ]);
-        });
-      } else {
-        _futureData = Future.error("Kein Benutzer eingeloggt");
-      }
-    });
-  }
+void initState() {
+  super.initState();
+
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    final username = context.read<UserProvider>().username;
+
+    if (username != null) {
+      setState(() {
+        _futureData = Future.wait([
+          UserService.fetchUserByUsername(username),
+          CommentService.fetchCommentByUsername(username),
+        ]);
+      });
+    } else {
+      // Optional: Fehlerbehandlung oder Redirect
+      print('Kein Benutzername gefunden');
+    }
+  });
+}
 
   @override
   Widget build(BuildContext context) {

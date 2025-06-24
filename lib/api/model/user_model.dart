@@ -14,7 +14,10 @@ class UserModel extends UserEntity {
     return UserModel(
       id: json['id'] ?? '',  // Leere Variable anstelle eines Fehlers melden 
       username: json['username'] ?? '',
-      profilePicture: json['profilePicture'] ?? '',
+      profilePicture: (json['profilePicture'] == null ||
+              json['profilePicture'] == '')
+          ? 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png' // Standardbild-URL
+          : json['profilePicture'],
     );
   }
 
