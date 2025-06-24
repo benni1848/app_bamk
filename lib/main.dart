@@ -22,7 +22,7 @@ void main() async {
   final apiUrl = dotenv.env['API_BASE_URL'] ?? '192.168.2.216:3000';
   print("Geladene API-URL aus assets/.env: $apiUrl");
   final authService = AuthService(); //Instanz anlegen
-  */
+*/
 
   runApp(
     MultiProvider(

@@ -91,7 +91,7 @@ class _FilmPageFormState extends State<FilmPageForm> {
       "inhalt": _contentController.text.trim(),
       "id": widget.movie.id.toString(),
       "username": username,
-      "rating": _ratingController.text.trim()
+      "rating": int.tryParse(_ratingController.text.trim()) ?? 0
     };
 
     try {
@@ -121,6 +121,7 @@ class _FilmPageFormState extends State<FilmPageForm> {
         SnackBar(content: Text("Fehler beim Senden: $e")),
       );
     }
+
   }
 
   Widget _buildDetail(String label, String value) {

@@ -20,29 +20,7 @@ class UserProfileForm extends StatefulWidget {
 class _UserProfileFormState extends State<UserProfileForm> {
   late Future<List<dynamic>> _futureData;
 
-  /*
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final username =
-          Provider.of<UserProvider>(context, listen: false).username;
-      if (username != null) {
-        final storage = FlutterSecureStorage();
-        final token = storage.read(key: "jwt_token").toString();
-        setState(() {
-          _futureData = Future.wait([
-
-            UserService.fetchUserByToken(token),
-            CommentService.fetchCommentByUsername(username),
-          ]);
-        });
-      } else {
-        _futureData = Future.error("Kein Benutzer eingeloggt");
-      }
-    });
-  }*/
-  @override
+@override
 void initState() {
   super.initState();
 
@@ -57,15 +35,9 @@ void initState() {
         ]);
       });
     } else {
-      // Optional: Fehlerbehandlung oder Redirect
       print('Kein Benutzername gefunden');
     }
   });
-}
-
-void reloadComments(){
-  final usernameForComments = context.read<UserProvider>().username;
-  CommentService.fetchCommentByUsername(usernameForComments);
 }
 
   @override
